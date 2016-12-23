@@ -153,7 +153,7 @@ func showRecipe() {
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		recipe, errs := composeapi.GetRecipe(*rawmodeflag, *showrecipeid)
+		recipe, errs := composeapi.GetRecipe(*showrecipeid)
 		bailOnErrs(errs)
 
 		if *formatflag {
@@ -323,7 +323,6 @@ func printRecipe(recipe composeapi.Recipe) {
 	fmt.Printf("%15s: %s\n", "Deployment ID", recipe.DeploymentID)
 	fmt.Printf("%15s: %s\n", "Name", recipe.Name)
 	fmt.Printf("%15s: %d\n", "Child Recipes", len(recipe.Embedded.Recipes))
-
 }
 
 func printVersionTransitions(version composeapi.VersionTransition) {
