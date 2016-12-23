@@ -1,6 +1,6 @@
-# CoCLI - A Compose CLI
+# bach - Basic API (Compose) Handler
 
-CoCLI is a Go-based application which uses the Compose API to provide the ability
+Bach is a Go-based application which uses the Compose API to provide the ability
 to create, monitor and delete Compose databases.
 
 To use, an environment variable - COMPOSEAPITOKEN must be set. This token value
@@ -9,8 +9,8 @@ can be obtained from the Compose console's Account view.
 Further details to follow.
 
 ```
-$ cocli --help
-usage: cocli [<flags>] <command> [<args> ...]
+$ bach --help
+usage: bach [<flags>] <command> [<args> ...]
 
 A Compose CLI application
 
