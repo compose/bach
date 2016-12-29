@@ -17,7 +17,7 @@ A Compose CLI application
 Flags:
   --help    Show context-sensitive help (also try --help-long and --help-man).
   --raw     Output raw JSON responses
-  --fmt     Format output for readability
+  --json    Output post-processed JSON results
   --fullca  Show all of CA Certificates
 
 Commands:

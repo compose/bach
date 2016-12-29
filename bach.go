@@ -28,7 +28,7 @@ var (
 	app = kingpin.New("bach", "A Compose CLI application")
 
 	rawmodeflag = app.Flag("raw", "Output raw JSON responses").Default("false").Bool()
-	formatflag  = app.Flag("fmt", "Format output for readability").Default("false").Bool()
+	jsonflag    = app.Flag("json", "Output post-processed JSON results").Default("false").Bool()
 	fullcaflag  = app.Flag("fullca", "Show all of CA Certificates").Default("false").Bool()
 
 	showcmd            = app.Command("show", "Show attribute")
@@ -112,7 +112,7 @@ func showAccount() {
 		account, errs := composeapi.GetAccount()
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			fmt.Printf("%15s: %s\n", "ID", account.ID)
 			fmt.Printf("%15s: %s\n", "Name", account.Name)
 			fmt.Printf("%15s: %s\n", "Slug", account.Slug)
@@ -132,7 +132,7 @@ func showDeployments() {
 		deployments, errs := composeapi.GetDeployments()
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *deployments {
 				fmt.Printf("%15s: %s\n", "ID", v.ID)
 				fmt.Printf("%15s: %s\n", "Name", v.Name)
@@ -156,7 +156,7 @@ func showRecipe() {
 		recipe, errs := composeapi.GetRecipe(*showrecipeid)
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			printRecipe(*recipe)
 		} else {
 			printAsJSON(*recipe)
@@ -173,7 +173,7 @@ func showRecipes() {
 	} else {
 		recipes, errs := composeapi.GetRecipesForDeployment(*showrecipesdepid)
 		bailOnErrs(errs)
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *recipes {
 				printRecipe(v)
 				fmt.Println()
@@ -192,7 +192,7 @@ func showVersions() {
 	} else {
 		versions, errs := composeapi.GetVersionsForDeployment(*showversionsdepid)
 		bailOnErrs(errs)
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *versions {
 				printVersionTransitions(v)
 				fmt.Println()
@@ -212,7 +212,7 @@ func showClusters() {
 		clusters, errs := composeapi.GetClusters()
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *clusters {
 				printCluster(v)
 				fmt.Println()
@@ -231,7 +231,7 @@ func showUser() {
 	} else {
 		user, errs := composeapi.GetUser()
 		bailOnErrs(errs)
-		if *formatflag {
+		if !*jsonflag {
 			fmt.Printf("%15s: %s\n", "ID", user.ID)
 			fmt.Println()
 		} else {
@@ -249,7 +249,7 @@ func showDatacenters() {
 		datacenters, errs := composeapi.GetDatacenters()
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *datacenters {
 				printDatacenter(v)
 				fmt.Println()
@@ -269,7 +269,7 @@ func showDatabases() {
 		databases, errs := composeapi.GetDatabases()
 		bailOnErrs(errs)
 
-		if *formatflag {
+		if !*jsonflag {
 			for _, v := range *databases {
 				printDatabase(v)
 				fmt.Println()
@@ -303,7 +303,7 @@ func createDeployment() {
 	deployment, errs := composeapi.CreateDeployment(params)
 	bailOnErrs(errs)
 
-	if *formatflag {
+	if !*jsonflag {
 		printDeployment(*deployment)
 	} else {
 		printAsJSON(*deployment)
