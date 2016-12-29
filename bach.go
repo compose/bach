@@ -322,6 +322,8 @@ func printRecipe(recipe composeapi.Recipe) {
 	fmt.Printf("%15s: %s\n", "Account ID", recipe.AccountID)
 	fmt.Printf("%15s: %s\n", "Deployment ID", recipe.DeploymentID)
 	fmt.Printf("%15s: %s\n", "Name", recipe.Name)
+	fmt.Printf("%15s: %s\n", "Created At", recipe.CreatedAt)
+	fmt.Printf("%15s: %s\n", "Updated At", recipe.UpdatedAt)
 	fmt.Printf("%15s: %d\n", "Child Recipes", len(recipe.Embedded.Recipes))
 }
 
@@ -340,7 +342,7 @@ func printCluster(cluster composeapi.Cluster) {
 	fmt.Printf("%15s: %t\n", "Multitenant", cluster.Multitenant)
 	fmt.Printf("%15s: %s\n", "Provider", cluster.Provider)
 	fmt.Printf("%15s: %s\n", "Region", cluster.Region)
-	fmt.Printf("%15s: %s\n", "Created Ad", cluster.CreatedAt)
+	fmt.Printf("%15s: %s\n", "Created At", cluster.CreatedAt)
 	fmt.Printf("%15s: %s\n", "Subdomain", cluster.Subdomain)
 }
 
