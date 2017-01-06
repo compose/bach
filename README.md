@@ -39,8 +39,8 @@ Commands:
   show deployment versions [<depid>]
     Show version and upgrades
 
-  show recipes
-    Show recipes for a deployment
+  show deployment details [<depid>]
+    Show deployment information
 
   show clusters
     Show available clusters

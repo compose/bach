@@ -37,13 +37,18 @@ var (
 	showrecipecmd      = showcmd.Command("recipe", "Show recipe")
 	showrecipeid       = showrecipecmd.Arg("recid", "Recipe ID").String()
 
-	showdeploymentcmd         = showcmd.Command("deployment", "Show deployment")
-	showdeploymentrecipescmd  = showdeploymentcmd.Command("recipes", "Show deployment recipes")
+	showdeploymentcmd = showcmd.Command("deployment", "Show deployment")
+
+	showdeploymentrecipescmd = showdeploymentcmd.Command("recipes", "Show deployment recipes")
+	showrecipesdepid         = showdeploymentrecipescmd.Arg("depid", "Deployment ID").String()
+
 	showdeploymentversionscmd = showdeploymentcmd.Command("versions", "Show version and upgrades")
-	showrecipesdepid          = showdeploymentrecipescmd.Arg("depid", "Deployment ID").String()
 	showversionsdepid         = showdeploymentversionscmd.Arg("depid", "Deployment ID").String()
 
-	showrecipescmd  = showcmd.Command("recipes", "Show recipes for a deployment")
+	showdeploymentdetailscmd = showdeploymentcmd.Command("details", "Show deployment information")
+	showdepdetailsid         = showdeploymentdetailscmd.Arg("depid", "Deployment ID").String()
+
+	//showrecipescmd  = showcmd.Command("recipes", "Show recipes for a deployment")
 	showclusterscmd = showcmd.Command("clusters", "Show available clusters")
 	showuser        = showcmd.Command("user", "Show current associated user")
 
@@ -88,6 +93,8 @@ func main() {
 		showRecipes()
 	case "show deployment versions":
 		showVersions()
+	case "show deployment details":
+		showDeployment()
 	case "show recipe":
 		showRecipe()
 	case "show clusters":
@@ -143,6 +150,23 @@ func showDeployments() {
 			}
 		} else {
 			printAsJSON(deployments)
+		}
+	}
+}
+
+func showDeployment() {
+	if *rawmodeflag {
+		text, errs := composeapi.GetDeploymentJSON(*showdepdetailsid)
+		bailOnErrs(errs)
+		fmt.Println(text)
+	} else {
+		deployment, errs := composeapi.GetDeployment(*showdepdetailsid)
+		bailOnErrs(errs)
+
+		if !*jsonflag {
+			printDeployment(*deployment)
+		} else {
+			printAsJSON(*deployment)
 		}
 	}
 }
@@ -310,6 +334,7 @@ func createDeployment() {
 	}
 
 }
+
 func getLink(link composeapi.Link) string {
 	return strings.Replace(link.HREF, "{?embed}", "", -1) // TODO: This should mangle the HREF properly
 }
