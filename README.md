@@ -57,4 +57,7 @@ Commands:
   create deployment [<flags>] [<name>] [<type>]
     Create deployment
 
+  watch [<flags>] <recid>
+    Watch recipe
+
 ```

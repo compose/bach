@@ -22,6 +22,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
@@ -61,6 +62,10 @@ var (
 	createdeploymenttype       = createdeploymentcmd.Arg("type", "New Deployment Type").String()
 	createdeploymentcluster    = createdeploymentcmd.Flag("cluster", "Cluster ID").String()
 	createdeploymentdatacenter = createdeploymentcmd.Flag("datacenter", "Datacenter location").String()
+
+	watchcmd      = app.Command("watch", "Watch recipe")
+	watchrecipeid = watchcmd.Arg("recid", "recipeid").Required().String()
+	watchrefresh  = watchcmd.Flag("refresh", "Refresh rate in seconds").Default("10").Int()
 
 	apitoken = os.Getenv("COMPOSEAPITOKEN")
 )
@@ -107,6 +112,8 @@ func main() {
 		showDatabases()
 	case "create deployment":
 		createDeployment()
+	case "watch":
+		watchRecipe()
 	}
 }
 
@@ -188,9 +195,31 @@ func showRecipe() {
 	}
 }
 
+func watchRecipe() {
+	recipe, errs := composeapi.GetRecipe(*watchrecipeid)
+	bailOnErrs(errs)
+	printRecipe(*recipe)
+
+	if recipe.Status == "complete" {
+		return
+	}
+
+	for {
+		time.Sleep(time.Duration(*watchrefresh) * time.Second)
+		recipe, errs = composeapi.GetRecipe(*watchrecipeid)
+		bailOnErrs(errs)
+
+		fmt.Println()
+		printRecipe(*recipe)
+
+		if recipe.Status == "complete" {
+			return
+		}
+	}
+}
+
 func showRecipes() {
 	if *rawmodeflag {
-		fmt.Println(*showrecipesdepid)
 		text, errs := composeapi.GetRecipesForDeploymentJSON(*showrecipesdepid)
 		bailOnErrs(errs)
 		fmt.Println(text)
