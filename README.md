@@ -33,13 +33,13 @@ Commands:
   show recipe [<recid>]
     Show recipe
 
-  show deployment recipes [<depid>]
+  show deployment recipes <deployment id>
     Show deployment recipes
 
-  show deployment versions [<depid>]
+  show deployment versions <deployment id>
     Show version and upgrades
 
-  show deployment details [<depid>]
+  show deployment details <deployment id>
     Show deployment information
 
   show clusters
@@ -55,9 +55,14 @@ Commands:
     Show available database types
 
   create deployment [<flags>] [<name>] [<type>]
-    Create deployment
+    Create a new deployment
 
-  watch [<flags>] <recid>
+  watch [<flags>] <recipe id>
     Watch recipe
 
+  set scale <set deployment id> <units>
+    Set scale of deployment
+
+  get scale <get deployment id>
+    Get scale of deployment
 ```

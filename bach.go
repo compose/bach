@@ -41,13 +41,13 @@ var (
 	showdeploymentcmd = showcmd.Command("deployment", "Show deployment")
 
 	showdeploymentrecipescmd = showdeploymentcmd.Command("recipes", "Show deployment recipes")
-	showrecipesdepid         = showdeploymentrecipescmd.Arg("depid", "Deployment ID").String()
+	showrecipesdepid         = showdeploymentrecipescmd.Arg("deployment id", "Deployment ID").Required().String()
 
 	showdeploymentversionscmd = showdeploymentcmd.Command("versions", "Show version and upgrades")
-	showversionsdepid         = showdeploymentversionscmd.Arg("depid", "Deployment ID").String()
+	showversionsdepid         = showdeploymentversionscmd.Arg("deployment id", "Deployment ID").Required().String()
 
 	showdeploymentdetailscmd = showdeploymentcmd.Command("details", "Show deployment information")
-	showdepdetailsid         = showdeploymentdetailscmd.Arg("depid", "Deployment ID").String()
+	showdepdetailsid         = showdeploymentdetailscmd.Arg("deployment id", "Deployment ID").Required().String()
 
 	//showrecipescmd  = showcmd.Command("recipes", "Show recipes for a deployment")
 	showclusterscmd = showcmd.Command("clusters", "Show available clusters")
@@ -64,8 +64,17 @@ var (
 	createdeploymentdatacenter = createdeploymentcmd.Flag("datacenter", "Datacenter location").String()
 
 	watchcmd      = app.Command("watch", "Watch recipe")
-	watchrecipeid = watchcmd.Arg("recid", "recipeid").Required().String()
+	watchrecipeid = watchcmd.Arg("recipe id", "recipeid").Required().String()
 	watchrefresh  = watchcmd.Flag("refresh", "Refresh rate in seconds").Default("10").Int()
+
+	setcmd               = app.Command("set", "Set...")
+	setscalecmd          = setcmd.Command("scale", "Scale...")
+	setscaledeploymentid = setscalecmd.Arg("set deployment id", "Set Deployment ID").Required().String()
+	setscalelevel        = setscalecmd.Arg("units", "New scale units").Required().Int()
+
+	getcmd               = app.Command("get", "Get...")
+	getscalecmd          = getcmd.Command("scale", "Scale...")
+	getscaledeploymentid = getscalecmd.Arg("get deployment id", "Get Deployment ID").Required().String()
 
 	apitoken = os.Getenv("COMPOSEAPITOKEN")
 )
@@ -114,6 +123,10 @@ func main() {
 		createDeployment()
 	case "watch":
 		watchRecipe()
+	case "get scale":
+		getScaleDeployment()
+	case "set scale":
+		setScaleDeployment()
 	}
 }
 
@@ -253,6 +266,40 @@ func showVersions() {
 		} else {
 			printAsJSON(*versions)
 		}
+	}
+}
+
+func getScaleDeployment() {
+	if *rawmodeflag {
+		text, errs := composeapi.GetScalingsJSON(*getscaledeploymentid)
+		bailOnErrs(errs)
+		fmt.Println(text)
+	} else {
+		scalings, errs := composeapi.GetScalings(*getscaledeploymentid)
+		bailOnErrs(errs)
+
+		if !*jsonflag {
+			printScalings(*scalings)
+			fmt.Println()
+		} else {
+			printAsJSON(*scalings)
+		}
+
+	}
+}
+
+func setScaleDeployment() {
+	params := composeapi.ScalingsParams{}
+	params.DeploymentID = *setscaledeploymentid
+	params.Deployment.Units = *setscalelevel
+
+	recipe, errs := composeapi.SetScalings(params)
+	bailOnErrs(errs)
+	if !*jsonflag {
+		printRecipe(*recipe)
+		fmt.Println()
+	} else {
+		printAsJSON(*recipe)
 	}
 }
 
@@ -444,4 +491,11 @@ func printDatabase(database composeapi.Database) {
 			}
 		}
 	}
+}
+
+func printScalings(scalings composeapi.Scalings) {
+	fmt.Printf("%15s: %d\n", "Allocated Units", scalings.AllocatedUnits)
+	fmt.Printf("%15s: %d\n", "Used Units", scalings.UsedUnits)
+	fmt.Printf("%15s: %d\n", "Starting Units", scalings.StartingUnits)
+	fmt.Printf("%15s: %d\n", "Minimum Units", scalings.MinimumUnits)
 }
