@@ -57,7 +57,7 @@ var (
 	showdatabases   = showcmd.Command("databases", "Show available database types")
 
 	createcmd                  = app.Command("create", "Create...")
-	createdeploymentcmd        = createcmd.Command("deployment", "Create deployment")
+	createdeploymentcmd        = createcmd.Command("deployment", "Create a new deployment")
 	createdeploymentname       = createdeploymentcmd.Arg("name", "New Deployment Name").String()
 	createdeploymenttype       = createdeploymentcmd.Arg("type", "New Deployment Type").String()
 	createdeploymentcluster    = createdeploymentcmd.Flag("cluster", "Cluster ID").String()
@@ -68,12 +68,12 @@ var (
 	watchrefresh  = watchcmd.Flag("refresh", "Refresh rate in seconds").Default("10").Int()
 
 	setcmd               = app.Command("set", "Set...")
-	setscalecmd          = setcmd.Command("scale", "Scale...")
+	setscalecmd          = setcmd.Command("scale", "Set scale of deployment")
 	setscaledeploymentid = setscalecmd.Arg("set deployment id", "Set Deployment ID").Required().String()
 	setscalelevel        = setscalecmd.Arg("units", "New scale units").Required().Int()
 
 	getcmd               = app.Command("get", "Get...")
-	getscalecmd          = getcmd.Command("scale", "Scale...")
+	getscalecmd          = getcmd.Command("scale", "Get scale of deployment")
 	getscaledeploymentid = getscalecmd.Arg("get deployment id", "Get Deployment ID").Required().String()
 
 	apitoken = os.Getenv("COMPOSEAPITOKEN")
