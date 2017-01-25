@@ -9,60 +9,82 @@ can be obtained from the Compose console's Account view.
 Further details to follow.
 
 ```
-$ bach --help
+$ ./bach --help-long                                             master
 usage: bach [<flags>] <command> [<args> ...]
 
 A Compose CLI application
 
 Flags:
-  --help    Show context-sensitive help (also try --help-long and --help-man).
-  --raw     Output raw JSON responses
-  --json    Output post-processed JSON results
-  --fullca  Show all of CA Certificates
+      --help                  Show context-sensitive help (also try --help-long and
+                              --help-man).
+  -r, --raw                   Output raw JSON responses
+  -j, --json                  Output post-processed JSON results
+  -f, --fullca                Show all of CA Certificates
+  -t, --token="yourAPItoken"  Set API token
 
 Commands:
   help [<command>...]
     Show help.
 
-  show account
+
+  account
     Show account details
 
-  show deployments
+
+  deployments
     Show deployments
 
-  show recipe [<recid>]
+
+  recipe [<recid>]
     Show recipe
 
-  show deployment recipes <deployment id>
+
+  recipes <deployment id>
     Show deployment recipes
 
-  show deployment versions <deployment id>
+
+  versions <deployment id>
     Show version and upgrades
 
-  show deployment details <deployment id>
+
+  details <deployment id>
     Show deployment information
 
-  show clusters
+
+  scale <deployment id>
+    Get scale of deployment
+
+
+  clusters
     Show available clusters
 
-  show user
+
+  user
     Show current associated user
 
-  show datacenters
+
+  datacenters
     Show available datacenters
 
-  show databases
+
+  databases
     Show available database types
 
-  create deployment [<flags>] [<name>] [<type>]
-    Create a new deployment
+
+  create [<flags>] [<name>] [<type>]
+    Create...
+
+    --cluster=CLUSTER        Cluster ID
+    --datacenter=DATACENTER  Datacenter location
+
+  set scale <deployment id> <units>
+    Set scale of deployment
+
 
   watch [<flags>] <recipe id>
     Watch recipe
 
-  set scale <set deployment id> <units>
-    Set scale of deployment
+    --refresh=10  Refresh rate in seconds
 
-  get scale <get deployment id>
-    Get scale of deployment
+
 ```
