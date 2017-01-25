@@ -28,55 +28,51 @@ import (
 var (
 	app = kingpin.New("bach", "A Compose CLI application")
 
-	rawmodeflag = app.Flag("raw", "Output raw JSON responses").Default("false").Bool()
-	jsonflag    = app.Flag("json", "Output post-processed JSON results").Default("false").Bool()
-	fullcaflag  = app.Flag("fullca", "Show all of CA Certificates").Default("false").Bool()
+	outputRawFlag  = app.Flag("raw", "Output raw JSON responses").Default("false").Short('r').Bool()
+	outputJSONFlag = app.Flag("json", "Output post-processed JSON results").Default("false").Short('j').Bool()
+	showFullCAFlag = app.Flag("fullca", "Show all of CA Certificates").Default("false").Short('f').Bool()
+	apiToken       = app.Flag("token", "Set API token").Default("yourAPItoken").OverrideDefaultFromEnvar("COMPOSEAPITOKEN").Short('t').String()
 
-	showcmd            = app.Command("show", "Show attribute")
-	showaccountcmd     = showcmd.Command("account", "Show account details")
-	showdeploymentscmd = showcmd.Command("deployments", "Show deployments")
-	showrecipecmd      = showcmd.Command("recipe", "Show recipe")
-	showrecipeid       = showrecipecmd.Arg("recid", "Recipe ID").String()
+	accountCmd = app.Command("account", "Show account details")
 
-	showdeploymentcmd = showcmd.Command("deployment", "Show deployment")
+	deploymentsCmd = app.Command("deployments", "Show deployments")
 
-	showdeploymentrecipescmd = showdeploymentcmd.Command("recipes", "Show deployment recipes")
-	showrecipesdepid         = showdeploymentrecipescmd.Arg("deployment id", "Deployment ID").Required().String()
+	recipeCmd = app.Command("recipe", "Show recipe")
+	recipeID  = recipeCmd.Arg("recid", "Recipe ID").String()
 
-	showdeploymentversionscmd = showdeploymentcmd.Command("versions", "Show version and upgrades")
-	showversionsdepid         = showdeploymentversionscmd.Arg("deployment id", "Deployment ID").Required().String()
+	recipesCmd = app.Command("recipes", "Show deployment recipes")
+	recipesID  = recipesCmd.Arg("deployment id", "Deployment ID").Required().String()
 
-	showdeploymentdetailscmd = showdeploymentcmd.Command("details", "Show deployment information")
-	showdepdetailsid         = showdeploymentdetailscmd.Arg("deployment id", "Deployment ID").Required().String()
+	versionsCmd          = app.Command("versions", "Show version and upgrades")
+	versionsDeploymentID = versionsCmd.Arg("deployment id", "Deployment ID").Required().String()
 
-	//showrecipescmd  = showcmd.Command("recipes", "Show recipes for a deployment")
-	showclusterscmd = showcmd.Command("clusters", "Show available clusters")
-	showuser        = showcmd.Command("user", "Show current associated user")
+	detailsCmd          = app.Command("details", "Show deployment information")
+	detailsDeploymentID = detailsCmd.Arg("deployment id", "Deployment ID").Required().String()
 
-	showdatacenters = showcmd.Command("datacenters", "Show available datacenters")
-	showdatabases   = showcmd.Command("databases", "Show available database types")
+	scaleCmd          = app.Command("scale", "Get scale of deployment")
+	scaleDeploymentID = scaleCmd.Arg("deployment id", "Deployment ID").Required().String()
 
-	createcmd                  = app.Command("create", "Create...")
-	createdeploymentcmd        = createcmd.Command("deployment", "Create a new deployment")
-	createdeploymentname       = createdeploymentcmd.Arg("name", "New Deployment Name").String()
-	createdeploymenttype       = createdeploymentcmd.Arg("type", "New Deployment Type").String()
-	createdeploymentcluster    = createdeploymentcmd.Flag("cluster", "Cluster ID").String()
-	createdeploymentdatacenter = createdeploymentcmd.Flag("datacenter", "Datacenter location").String()
+	clustersCmd    = app.Command("clusters", "Show available clusters")
+	userCmd        = app.Command("user", "Show current associated user")
+	datacentersCmd = app.Command("datacenters", "Show available datacenters")
+	databasesCmd   = app.Command("databases", "Show available database types")
 
-	watchcmd      = app.Command("watch", "Watch recipe")
-	watchrecipeid = watchcmd.Arg("recipe id", "recipeid").Required().String()
-	watchrefresh  = watchcmd.Flag("refresh", "Refresh rate in seconds").Default("10").Int()
+	createCmd                  = app.Command("create", "Create...")
+	createdeploymentname       = createCmd.Arg("name", "New Deployment Name").String()
+	createdeploymenttype       = createCmd.Arg("type", "New Deployment Type").String()
+	createdeploymentcluster    = createCmd.Flag("cluster", "Cluster ID").String()
+	createdeploymentdatacenter = createCmd.Flag("datacenter", "Datacenter location").String()
 
-	setcmd               = app.Command("set", "Set...")
-	setscalecmd          = setcmd.Command("scale", "Set scale of deployment")
-	setscaledeploymentid = setscalecmd.Arg("set deployment id", "Set Deployment ID").Required().String()
-	setscalelevel        = setscalecmd.Arg("units", "New scale units").Required().Int()
+	setCmd               = app.Command("set", "Set...")
+	setScaleCmd          = setCmd.Command("scale", "Set scale of deployment")
+	setScaleDeploymentID = setScaleCmd.Arg("deployment id", "Deployment ID to scale").Required().String()
+	setScaleLevel        = setScaleCmd.Arg("units", "New scale units").Required().Int()
 
-	getcmd               = app.Command("get", "Get...")
-	getscalecmd          = getcmd.Command("scale", "Get scale of deployment")
-	getscaledeploymentid = getscalecmd.Arg("get deployment id", "Get Deployment ID").Required().String()
+	watchCmd         = app.Command("watch", "Watch recipe")
+	watcRecipeCmd    = watchCmd.Arg("recipe id", "recipeid").Required().String()
+	watchRefreshRate = watchCmd.Flag("refresh", "Refresh rate in seconds").Default("10").Int()
 
-	apitoken = os.Getenv("COMPOSEAPITOKEN")
+	//apiToken = os.Getenv("COMPOSEAPITOKEN")
 )
 
 const (
@@ -94,36 +90,41 @@ func printAsJSON(toprint interface{}) {
 	fmt.Println(string(jsonstr))
 }
 func main() {
-	if apitoken == "" {
-		log.Fatal("COMPOSEAPITOKEN environment variable not set")
+
+	parsed := kingpin.MustParse(app.Parse(os.Args[1:]))
+
+	if *apiToken == "yourAPItoken" {
+		log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set")
+	} else {
+		composeapi.SetAPIToken(*apiToken)
 	}
 
-	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
-	case "show account":
+	switch parsed {
+	case "account":
 		showAccount()
-	case "show deployments":
+	case "deployments":
 		showDeployments()
-	case "show deployment recipes":
+	case "recipes":
 		showRecipes()
-	case "show deployment versions":
+	case "versions":
 		showVersions()
-	case "show deployment details":
+	case "details":
 		showDeployment()
-	case "show recipe":
+	case "recipe":
 		showRecipe()
-	case "show clusters":
+	case "clusters":
 		showClusters()
-	case "show user":
+	case "user":
 		showUser()
-	case "show datacenters":
+	case "datacenters":
 		showDatacenters()
-	case "show databases":
+	case "databases":
 		showDatabases()
-	case "create deployment":
+	case "deployment":
 		createDeployment()
 	case "watch":
 		watchRecipe()
-	case "get scale":
+	case "scale":
 		getScaleDeployment()
 	case "set scale":
 		setScaleDeployment()
@@ -131,7 +132,7 @@ func main() {
 }
 
 func showAccount() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetAccountJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
@@ -139,7 +140,7 @@ func showAccount() {
 		account, errs := composeapi.GetAccount()
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			fmt.Printf("%15s: %s\n", "ID", account.ID)
 			fmt.Printf("%15s: %s\n", "Name", account.Name)
 			fmt.Printf("%15s: %s\n", "Slug", account.Slug)
@@ -151,7 +152,7 @@ func showAccount() {
 }
 
 func showDeployments() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetDeploymentsJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
@@ -159,7 +160,7 @@ func showDeployments() {
 		deployments, errs := composeapi.GetDeployments()
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *deployments {
 				fmt.Printf("%15s: %s\n", "ID", v.ID)
 				fmt.Printf("%15s: %s\n", "Name", v.Name)
@@ -175,15 +176,15 @@ func showDeployments() {
 }
 
 func showDeployment() {
-	if *rawmodeflag {
-		text, errs := composeapi.GetDeploymentJSON(*showdepdetailsid)
+	if *outputRawFlag {
+		text, errs := composeapi.GetDeploymentJSON(*detailsDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		deployment, errs := composeapi.GetDeployment(*showdepdetailsid)
+		deployment, errs := composeapi.GetDeployment(*detailsDeploymentID)
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			printDeployment(*deployment)
 		} else {
 			printAsJSON(*deployment)
@@ -192,15 +193,15 @@ func showDeployment() {
 }
 
 func showRecipe() {
-	if *rawmodeflag {
-		text, errs := composeapi.GetRecipeJSON(*showrecipeid)
+	if *outputRawFlag {
+		text, errs := composeapi.GetRecipeJSON(*recipeID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		recipe, errs := composeapi.GetRecipe(*showrecipeid)
+		recipe, errs := composeapi.GetRecipe(*recipeID)
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			printRecipe(*recipe)
 		} else {
 			printAsJSON(*recipe)
@@ -209,7 +210,7 @@ func showRecipe() {
 }
 
 func watchRecipe() {
-	recipe, errs := composeapi.GetRecipe(*watchrecipeid)
+	recipe, errs := composeapi.GetRecipe(*watcRecipeCmd)
 	bailOnErrs(errs)
 	printRecipe(*recipe)
 
@@ -218,8 +219,8 @@ func watchRecipe() {
 	}
 
 	for {
-		time.Sleep(time.Duration(*watchrefresh) * time.Second)
-		recipe, errs = composeapi.GetRecipe(*watchrecipeid)
+		time.Sleep(time.Duration(*watchRefreshRate) * time.Second)
+		recipe, errs = composeapi.GetRecipe(*watcRecipeCmd)
 		bailOnErrs(errs)
 
 		fmt.Println()
@@ -232,14 +233,14 @@ func watchRecipe() {
 }
 
 func showRecipes() {
-	if *rawmodeflag {
-		text, errs := composeapi.GetRecipesForDeploymentJSON(*showrecipesdepid)
+	if *outputRawFlag {
+		text, errs := composeapi.GetRecipesForDeploymentJSON(*recipesID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		recipes, errs := composeapi.GetRecipesForDeployment(*showrecipesdepid)
+		recipes, errs := composeapi.GetRecipesForDeployment(*recipesID)
 		bailOnErrs(errs)
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *recipes {
 				printRecipe(v)
 				fmt.Println()
@@ -251,14 +252,14 @@ func showRecipes() {
 }
 
 func showVersions() {
-	if *rawmodeflag {
-		text, errs := composeapi.GetVersionsForDeploymentJSON(*showversionsdepid)
+	if *outputRawFlag {
+		text, errs := composeapi.GetVersionsForDeploymentJSON(*versionsDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		versions, errs := composeapi.GetVersionsForDeployment(*showversionsdepid)
+		versions, errs := composeapi.GetVersionsForDeployment(*versionsDeploymentID)
 		bailOnErrs(errs)
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *versions {
 				printVersionTransitions(v)
 				fmt.Println()
@@ -270,15 +271,15 @@ func showVersions() {
 }
 
 func getScaleDeployment() {
-	if *rawmodeflag {
-		text, errs := composeapi.GetScalingsJSON(*getscaledeploymentid)
+	if *outputRawFlag {
+		text, errs := composeapi.GetScalingsJSON(*scaleDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		scalings, errs := composeapi.GetScalings(*getscaledeploymentid)
+		scalings, errs := composeapi.GetScalings(*scaleDeploymentID)
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			printScalings(*scalings)
 			fmt.Println()
 		} else {
@@ -290,12 +291,12 @@ func getScaleDeployment() {
 
 func setScaleDeployment() {
 	params := composeapi.ScalingsParams{}
-	params.DeploymentID = *setscaledeploymentid
-	params.Deployment.Units = *setscalelevel
+	params.DeploymentID = *setScaleDeploymentID
+	params.Deployment.Units = *setScaleLevel
 
 	recipe, errs := composeapi.SetScalings(params)
 	bailOnErrs(errs)
-	if !*jsonflag {
+	if !*outputJSONFlag {
 		printRecipe(*recipe)
 		fmt.Println()
 	} else {
@@ -304,7 +305,7 @@ func setScaleDeployment() {
 }
 
 func showClusters() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetClustersJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
@@ -312,7 +313,7 @@ func showClusters() {
 		clusters, errs := composeapi.GetClusters()
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *clusters {
 				printCluster(v)
 				fmt.Println()
@@ -324,14 +325,14 @@ func showClusters() {
 }
 
 func showUser() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetUserJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
 		user, errs := composeapi.GetUser()
 		bailOnErrs(errs)
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			fmt.Printf("%15s: %s\n", "ID", user.ID)
 			fmt.Println()
 		} else {
@@ -341,7 +342,7 @@ func showUser() {
 }
 
 func showDatacenters() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetDatacentersJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
@@ -349,7 +350,7 @@ func showDatacenters() {
 		datacenters, errs := composeapi.GetDatacenters()
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *datacenters {
 				printDatacenter(v)
 				fmt.Println()
@@ -361,7 +362,7 @@ func showDatacenters() {
 }
 
 func showDatabases() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		text, errs := composeapi.GetDatabasesJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
@@ -369,7 +370,7 @@ func showDatabases() {
 		databases, errs := composeapi.GetDatabases()
 		bailOnErrs(errs)
 
-		if !*jsonflag {
+		if !*outputJSONFlag {
 			for _, v := range *databases {
 				printDatabase(v)
 				fmt.Println()
@@ -381,7 +382,7 @@ func showDatabases() {
 }
 
 func createDeployment() {
-	if *rawmodeflag {
+	if *outputRawFlag {
 		log.Fatal("Raw mode not supported for createDeployment")
 	}
 
@@ -403,7 +404,7 @@ func createDeployment() {
 	deployment, errs := composeapi.CreateDeployment(params)
 	bailOnErrs(errs)
 
-	if !*jsonflag {
+	if !*outputJSONFlag {
 		printDeployment(*deployment)
 	} else {
 		printAsJSON(*deployment)
@@ -462,7 +463,7 @@ func printDeployment(deployment composeapi.Deployment) {
 		fmt.Printf("%15s: %s\n", "Prov Recipe ID", deployment.ProvisionRecipeID)
 	}
 	if deployment.CACertificateBase64 != "" {
-		if *fullcaflag {
+		if *showFullCAFlag {
 			fmt.Printf("%15s: %s\n", "CA Certificate", deployment.CACertificateBase64)
 		} else {
 			fmt.Printf("%15s: %s...\n", "CA Certificate", deployment.CACertificateBase64[0:32])
