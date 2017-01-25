@@ -9,7 +9,7 @@ can be obtained from the Compose console's Account view.
 Further details to follow.
 
 ```
-$ ./bach --help-long                                         master ✚ ✱
+$ bach --help-long
 usage: bach [<flags>] <command> [<args> ...]
 
 A Compose CLI application
@@ -20,6 +20,7 @@ Flags:
   -r, --raw                   Output raw JSON responses
   -j, --json                  Output post-processed JSON results
   -f, --fullca                Show all of CA Certificates
+      --nodecodeca            Do not Decode base64 CA Certificates
   -t, --token="yourAPItoken"  Set API token
 
 Commands:
