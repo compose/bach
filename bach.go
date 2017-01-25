@@ -15,6 +15,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/compose/gocomposeapi"
@@ -31,6 +32,7 @@ var (
 	outputRawFlag  = app.Flag("raw", "Output raw JSON responses").Default("false").Short('r').Bool()
 	outputJSONFlag = app.Flag("json", "Output post-processed JSON results").Default("false").Short('j').Bool()
 	showFullCAFlag = app.Flag("fullca", "Show all of CA Certificates").Default("false").Short('f').Bool()
+	noDecodeCAFlag = app.Flag("nodecodeca", "Do not Decode base64 CA Certificates").Default("false").Bool()
 	apiToken       = app.Flag("token", "Set API token").Default("yourAPItoken").OverrideDefaultFromEnvar("COMPOSEAPITOKEN").Short('t').String()
 
 	accountCmd = app.Command("account", "Show account details")
@@ -464,9 +466,17 @@ func printDeployment(deployment composeapi.Deployment) {
 	}
 	if deployment.CACertificateBase64 != "" {
 		if *showFullCAFlag {
-			fmt.Printf("%15s: %s\n", "CA Certificate", deployment.CACertificateBase64)
+			if *noDecodeCAFlag {
+				fmt.Printf("%15s: %s\n", "CA Certificate", deployment.CACertificateBase64)
+			} else {
+				decoded, err := base64.StdEncoding.DecodeString(deployment.CACertificateBase64)
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Printf("%15s:\n%s", "CA Certificate", decoded)
+			}
 		} else {
-			fmt.Printf("%15s: %s...\n", "CA Certificate", deployment.CACertificateBase64[0:32])
+			fmt.Printf("%15s: %s... (Use --fullca for certificate)\n", "CA Certificate", deployment.CACertificateBase64[0:32])
 		}
 	}
 	fmt.Printf("%15s: %s\n", "Web UI Link", getLink(deployment.Links.ComposeWebUILink))
