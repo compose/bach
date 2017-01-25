@@ -57,7 +57,7 @@ var (
 	datacentersCmd = app.Command("datacenters", "Show available datacenters")
 	databasesCmd   = app.Command("databases", "Show available database types")
 
-	createCmd                  = app.Command("create", "Create...")
+	createCmd                  = app.Command("create", "Create deployment")
 	createdeploymentname       = createCmd.Arg("name", "New Deployment Name").String()
 	createdeploymenttype       = createCmd.Arg("type", "New Deployment Type").String()
 	createdeploymentcluster    = createCmd.Flag("cluster", "Cluster ID").String()

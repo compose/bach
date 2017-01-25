@@ -9,7 +9,7 @@ can be obtained from the Compose console's Account view.
 Further details to follow.
 
 ```
-$ ./bach --help-long                                             master
+$ ./bach --help-long                                         master ✚ ✱
 usage: bach [<flags>] <command> [<args> ...]
 
 A Compose CLI application
@@ -72,7 +72,7 @@ Commands:
 
 
   create [<flags>] [<name>] [<type>]
-    Create...
+    Create deployment
 
     --cluster=CLUSTER        Cluster ID
     --datacenter=DATACENTER  Datacenter location
