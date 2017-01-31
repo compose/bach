@@ -1,0 +1,5 @@
+package: github.com/compose/bach
+import:
+- package: github.com/compose/gocomposeapi
+- package: gopkg.in/alecthomas/kingpin.v2
+  version: ~2.2.3
