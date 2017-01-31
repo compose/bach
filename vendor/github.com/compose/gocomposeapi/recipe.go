@@ -15,6 +15,7 @@
 package composeapi
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -38,4 +39,43 @@ type recipeResponse struct {
 	Embedded struct {
 		Recipes []Recipe `json:"recipes"`
 	} `json:"_embedded"`
+}
+
+//GetRecipeJSON Gets raw JSON for recipeid
+func (c *Client) GetRecipeJSON(recipeid string) (string, []error) {
+	return c.getJSON("recipes/" + recipeid)
+}
+
+//GetRecipe gets status of Recipe
+func (c *Client) GetRecipe(recipeid string) (*Recipe, []error) {
+	body, errs := c.GetRecipeJSON(recipeid)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	recipe := Recipe{}
+	json.Unmarshal([]byte(body), &recipe)
+
+	return &recipe, nil
+}
+
+//GetRecipesForDeploymentJSON returns raw JSON for getRecipesforDeployment
+func (c *Client) GetRecipesForDeploymentJSON(deploymentid string) (string, []error) {
+	return c.getJSON("deployments/" + deploymentid + "/recipes")
+}
+
+//GetRecipesForDeployment gets deployment recipe life
+func (c *Client) GetRecipesForDeployment(deploymentid string) (*[]Recipe, []error) {
+	body, errs := c.GetRecipesForDeploymentJSON(deploymentid)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	recipeResponse := Recipe{}
+	json.Unmarshal([]byte(body), &recipeResponse)
+	recipes := recipeResponse.Embedded.Recipes
+
+	return &recipes, nil
 }

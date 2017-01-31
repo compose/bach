@@ -14,7 +14,29 @@
 
 package composeapi
 
+import (
+	"encoding/json"
+)
+
 // User structure
 type User struct {
 	ID string `json:"id"`
+}
+
+//GetUserJSON returns user JSON string
+func (c *Client) GetUserJSON() (string, []error) {
+	return c.getJSON("user")
+}
+
+//GetUser Gets information about user
+func (c *Client) GetUser() (*User, []error) {
+	body, errs := c.GetUserJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	user := User{}
+	json.Unmarshal([]byte(body), &user)
+	return &user, nil
 }

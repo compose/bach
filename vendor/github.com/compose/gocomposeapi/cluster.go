@@ -15,6 +15,7 @@
 package composeapi
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -36,4 +37,24 @@ type clusterResponse struct {
 	Embedded struct {
 		Clusters []Cluster `json:"clusters"`
 	} `json:"_embedded"`
+}
+
+//GetClustersJSON gets clusters available
+func (c *Client) GetClustersJSON() (string, []error) {
+	return c.getJSON("clusters")
+}
+
+//GetClusters gets clusters available
+func (c *Client) GetClusters() (*[]Cluster, []error) {
+	body, errs := c.GetClustersJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	clustersResponse := clusterResponse{}
+	json.Unmarshal([]byte(body), &clustersResponse)
+	clusters := clustersResponse.Embedded.Clusters
+
+	return &clusters, nil
 }

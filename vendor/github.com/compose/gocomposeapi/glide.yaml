@@ -1,0 +1,4 @@
+package: github.com/compose/gocomposeapi
+import:
+- package: github.com/parnurzeal/gorequest
+  version: ~0.2.14

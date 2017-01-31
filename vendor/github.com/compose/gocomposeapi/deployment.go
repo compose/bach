@@ -15,6 +15,10 @@
 package composeapi
 
 import (
+	"encoding/json"
+	"errors"
+	"github.com/parnurzeal/gorequest"
+	"strconv"
 	"time"
 )
 
@@ -74,4 +78,79 @@ type versionsResponse struct {
 	Embedded struct {
 		VersionTransitions []VersionTransition `json:"transitions"`
 	} `json:"_embedded"`
+}
+
+//CreateDeploymentJSON performs the call
+func (c *Client) CreateDeploymentJSON(params CreateDeploymentParams) (string, []error) {
+	response, body, errs := gorequest.New().Post(apibase+"deployments").
+		Set("Authorization", "Bearer "+c.apiToken).
+		Set("Content-type", "application/json; charset=utf-8").
+		Send(params).
+		End()
+
+	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
+		myerrors := Errors{}
+		err := json.Unmarshal([]byte(body), &myerrors)
+		if err != nil {
+			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+		} else {
+			errs = append(errs, errors.New(myerrors.Error))
+		}
+	}
+
+	return body, errs
+}
+
+//CreateDeployment creates a deployment
+func (c *Client) CreateDeployment(params CreateDeploymentParams) (*Deployment, []error) {
+
+	// This is a POST not a GET, so it builds its own request
+
+	body, errs := c.CreateDeploymentJSON(params)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	deployed := Deployment{}
+	json.Unmarshal([]byte(body), &deployed)
+
+	return &deployed, nil
+}
+
+//GetDeploymentsJSON returns raw deployment
+func (c *Client) GetDeploymentsJSON() (string, []error) { return c.getJSON("deployments") }
+
+//GetDeployments returns deployment structure
+func (c *Client) GetDeployments() (*[]Deployment, []error) {
+	body, errs := c.GetDeploymentsJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	deploymentResponse := deploymentsResponse{}
+	json.Unmarshal([]byte(body), &deploymentResponse)
+	deployments := deploymentResponse.Embedded.Deployments
+
+	return &deployments, nil
+}
+
+//GetDeploymentJSON returns raw deployment
+func (c *Client) GetDeploymentJSON(deploymentid string) (string, []error) {
+	return c.getJSON("deployments/" + deploymentid)
+}
+
+//GetDeployment returns deployment structure
+func (c *Client) GetDeployment(deploymentid string) (*Deployment, []error) {
+	body, errs := c.GetDeploymentJSON(deploymentid)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	deployment := Deployment{}
+	json.Unmarshal([]byte(body), &deployment)
+
+	return &deployment, nil
 }

@@ -18,7 +18,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/compose/gocomposeapi"
+	composeAPI "github.com/compose/gocomposeapi"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"log"
 	"os"
@@ -77,10 +77,6 @@ var (
 	//apiToken = os.Getenv("COMPOSEAPITOKEN")
 )
 
-const (
-	apibase = "https://api.compose.io/2016-07/"
-)
-
 func bailOnErrs(errs []error) {
 	if errs != nil {
 		log.Fatal(errs)
@@ -94,52 +90,57 @@ func printAsJSON(toprint interface{}) {
 func main() {
 
 	parsed := kingpin.MustParse(app.Parse(os.Args[1:]))
+	var client *composeAPI.Client
 
 	if *apiToken == "yourAPItoken" {
 		log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set")
 	} else {
-		composeapi.SetAPIToken(*apiToken)
+		var err error
+		client, err = composeAPI.NewClient(*apiToken)
+		if err != nil {
+			log.Fatalf("Could not create compose client: %s", err.Error())
+		}
 	}
 
 	switch parsed {
 	case "account":
-		showAccount()
+		showAccount(client)
 	case "deployments":
-		showDeployments()
+		showDeployments(client)
 	case "recipes":
-		showRecipes()
+		showRecipes(client)
 	case "versions":
-		showVersions()
+		showVersions(client)
 	case "details":
-		showDeployment()
+		showDeployment(client)
 	case "recipe":
-		showRecipe()
+		showRecipe(client)
 	case "clusters":
-		showClusters()
+		showClusters(client)
 	case "user":
-		showUser()
+		showUser(client)
 	case "datacenters":
-		showDatacenters()
+		showDatacenters(client)
 	case "databases":
-		showDatabases()
+		showDatabases(client)
 	case "deployment":
-		createDeployment()
+		createDeployment(client)
 	case "watch":
-		watchRecipe()
+		watchRecipe(client)
 	case "scale":
-		getScaleDeployment()
+		getScaleDeployment(client)
 	case "set scale":
-		setScaleDeployment()
+		setScaleDeployment(client)
 	}
 }
 
-func showAccount() {
+func showAccount(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetAccountJSON()
+		text, errs := c.GetAccountJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		account, errs := composeapi.GetAccount()
+		account, errs := c.GetAccount()
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -153,13 +154,13 @@ func showAccount() {
 	}
 }
 
-func showDeployments() {
+func showDeployments(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetDeploymentsJSON()
+		text, errs := c.GetDeploymentsJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		deployments, errs := composeapi.GetDeployments()
+		deployments, errs := c.GetDeployments()
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -177,13 +178,13 @@ func showDeployments() {
 	}
 }
 
-func showDeployment() {
+func showDeployment(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetDeploymentJSON(*detailsDeploymentID)
+		text, errs := c.GetDeploymentJSON(*detailsDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		deployment, errs := composeapi.GetDeployment(*detailsDeploymentID)
+		deployment, errs := c.GetDeployment(*detailsDeploymentID)
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -194,13 +195,13 @@ func showDeployment() {
 	}
 }
 
-func showRecipe() {
+func showRecipe(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetRecipeJSON(*recipeID)
+		text, errs := c.GetRecipeJSON(*recipeID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		recipe, errs := composeapi.GetRecipe(*recipeID)
+		recipe, errs := c.GetRecipe(*recipeID)
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -211,8 +212,8 @@ func showRecipe() {
 	}
 }
 
-func watchRecipe() {
-	recipe, errs := composeapi.GetRecipe(*watcRecipeCmd)
+func watchRecipe(c *composeAPI.Client) {
+	recipe, errs := c.GetRecipe(*watcRecipeCmd)
 	bailOnErrs(errs)
 	printRecipe(*recipe)
 
@@ -222,7 +223,7 @@ func watchRecipe() {
 
 	for {
 		time.Sleep(time.Duration(*watchRefreshRate) * time.Second)
-		recipe, errs = composeapi.GetRecipe(*watcRecipeCmd)
+		recipe, errs = c.GetRecipe(*watcRecipeCmd)
 		bailOnErrs(errs)
 
 		fmt.Println()
@@ -234,13 +235,13 @@ func watchRecipe() {
 	}
 }
 
-func showRecipes() {
+func showRecipes(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetRecipesForDeploymentJSON(*recipesID)
+		text, errs := c.GetRecipesForDeploymentJSON(*recipesID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		recipes, errs := composeapi.GetRecipesForDeployment(*recipesID)
+		recipes, errs := c.GetRecipesForDeployment(*recipesID)
 		bailOnErrs(errs)
 		if !*outputJSONFlag {
 			for _, v := range *recipes {
@@ -253,13 +254,13 @@ func showRecipes() {
 	}
 }
 
-func showVersions() {
+func showVersions(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetVersionsForDeploymentJSON(*versionsDeploymentID)
+		text, errs := c.GetVersionsForDeploymentJSON(*versionsDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		versions, errs := composeapi.GetVersionsForDeployment(*versionsDeploymentID)
+		versions, errs := c.GetVersionsForDeployment(*versionsDeploymentID)
 		bailOnErrs(errs)
 		if !*outputJSONFlag {
 			for _, v := range *versions {
@@ -272,13 +273,13 @@ func showVersions() {
 	}
 }
 
-func getScaleDeployment() {
+func getScaleDeployment(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetScalingsJSON(*scaleDeploymentID)
+		text, errs := c.GetScalingsJSON(*scaleDeploymentID)
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		scalings, errs := composeapi.GetScalings(*scaleDeploymentID)
+		scalings, errs := c.GetScalings(*scaleDeploymentID)
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -291,12 +292,12 @@ func getScaleDeployment() {
 	}
 }
 
-func setScaleDeployment() {
-	params := composeapi.ScalingsParams{}
+func setScaleDeployment(c *composeAPI.Client) {
+	params := composeAPI.ScalingsParams{}
 	params.DeploymentID = *setScaleDeploymentID
 	params.Deployment.Units = *setScaleLevel
 
-	recipe, errs := composeapi.SetScalings(params)
+	recipe, errs := c.SetScalings(params)
 	bailOnErrs(errs)
 	if !*outputJSONFlag {
 		printRecipe(*recipe)
@@ -306,13 +307,13 @@ func setScaleDeployment() {
 	}
 }
 
-func showClusters() {
+func showClusters(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetClustersJSON()
+		text, errs := c.GetClustersJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		clusters, errs := composeapi.GetClusters()
+		clusters, errs := c.GetClusters()
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -326,13 +327,13 @@ func showClusters() {
 	}
 }
 
-func showUser() {
+func showUser(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetUserJSON()
+		text, errs := c.GetUserJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		user, errs := composeapi.GetUser()
+		user, errs := c.GetUser()
 		bailOnErrs(errs)
 		if !*outputJSONFlag {
 			fmt.Printf("%15s: %s\n", "ID", user.ID)
@@ -343,13 +344,13 @@ func showUser() {
 	}
 }
 
-func showDatacenters() {
+func showDatacenters(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetDatacentersJSON()
+		text, errs := c.GetDatacentersJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		datacenters, errs := composeapi.GetDatacenters()
+		datacenters, errs := c.GetDatacenters()
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -363,13 +364,13 @@ func showDatacenters() {
 	}
 }
 
-func showDatabases() {
+func showDatabases(c *composeAPI.Client) {
 	if *outputRawFlag {
-		text, errs := composeapi.GetDatabasesJSON()
+		text, errs := c.GetDatabasesJSON()
 		bailOnErrs(errs)
 		fmt.Println(text)
 	} else {
-		databases, errs := composeapi.GetDatabases()
+		databases, errs := c.GetDatabases()
 		bailOnErrs(errs)
 
 		if !*outputJSONFlag {
@@ -383,19 +384,19 @@ func showDatabases() {
 	}
 }
 
-func createDeployment() {
+func createDeployment(c *composeAPI.Client) {
 	if *outputRawFlag {
 		log.Fatal("Raw mode not supported for createDeployment")
 	}
 
-	account, errs := composeapi.GetAccount()
+	account, errs := c.GetAccount()
 	bailOnErrs(errs)
 
 	if *createdeploymentdatacenter == "" && *createdeploymentcluster == "" {
 		log.Fatal("Must supply either a --cluster id or --datacenter region")
 	}
 
-	params := composeapi.CreateDeploymentParams{
+	params := composeAPI.CreateDeploymentParams{
 		Name:         *createdeploymentname,
 		AccountID:    account.ID,
 		DatabaseType: *createdeploymenttype,
@@ -403,7 +404,7 @@ func createDeployment() {
 		ClusterID:    *createdeploymentcluster,
 	}
 
-	deployment, errs := composeapi.CreateDeployment(params)
+	deployment, errs := c.CreateDeployment(params)
 	bailOnErrs(errs)
 
 	if !*outputJSONFlag {
@@ -414,11 +415,11 @@ func createDeployment() {
 
 }
 
-func getLink(link composeapi.Link) string {
+func getLink(link composeAPI.Link) string {
 	return strings.Replace(link.HREF, "{?embed}", "", -1) // TODO: This should mangle the HREF properly
 }
 
-func printRecipe(recipe composeapi.Recipe) {
+func printRecipe(recipe composeAPI.Recipe) {
 	fmt.Printf("%15s: %s\n", "ID", recipe.ID)
 	fmt.Printf("%15s: %s\n", "Template", recipe.Template)
 	fmt.Printf("%15s: %s\n", "Status", recipe.Status)
@@ -431,13 +432,13 @@ func printRecipe(recipe composeapi.Recipe) {
 	fmt.Printf("%15s: %d\n", "Child Recipes", len(recipe.Embedded.Recipes))
 }
 
-func printVersionTransitions(version composeapi.VersionTransition) {
+func printVersionTransitions(version composeAPI.VersionTransition) {
 	fmt.Printf("%15s: %s\n", "Application", version.Application)
 	fmt.Printf("%15s: %s\n", "Method", version.Method)
 	fmt.Printf("%15s: %s\n", "From Version", version.FromVersion)
 	fmt.Printf("%15s: %s\n", "To Version", version.ToVersion)
 }
-func printCluster(cluster composeapi.Cluster) {
+func printCluster(cluster composeAPI.Cluster) {
 	fmt.Printf("%15s: %s\n", "ID", cluster.ID)
 	fmt.Printf("%15s: %s\n", "Account ID", cluster.AccountID)
 	fmt.Printf("%15s: %s\n", "Account Slug", cluster.AccountSlug)
@@ -450,13 +451,13 @@ func printCluster(cluster composeapi.Cluster) {
 	fmt.Printf("%15s: %s\n", "Subdomain", cluster.Subdomain)
 }
 
-func printDatacenter(datacenter composeapi.Datacenter) {
+func printDatacenter(datacenter composeAPI.Datacenter) {
 	fmt.Printf("%15s: %s\n", "Region", datacenter.Region)
 	fmt.Printf("%15s: %s\n", "Provider", datacenter.Provider)
 	fmt.Printf("%15s: %s\n", "Slug", datacenter.Slug)
 }
 
-func printDeployment(deployment composeapi.Deployment) {
+func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "ID", deployment.ID)
 	fmt.Printf("%15s: %s\n", "Name", deployment.Name)
 	fmt.Printf("%15s: %s\n", "Type", deployment.Type)
@@ -489,7 +490,7 @@ func printDeployment(deployment composeapi.Deployment) {
 
 }
 
-func printDatabase(database composeapi.Database) {
+func printDatabase(database composeAPI.Database) {
 	fmt.Printf("%15s: %s\n", "Type", database.DatabaseType)
 	fmt.Printf("%15s: %s\n", "Status", database.Status)
 
@@ -504,7 +505,7 @@ func printDatabase(database composeapi.Database) {
 	}
 }
 
-func printScalings(scalings composeapi.Scalings) {
+func printScalings(scalings composeAPI.Scalings) {
 	fmt.Printf("%15s: %d\n", "Allocated Units", scalings.AllocatedUnits)
 	fmt.Printf("%15s: %d\n", "Used Units", scalings.UsedUnits)
 	fmt.Printf("%15s: %d\n", "Starting Units", scalings.StartingUnits)
