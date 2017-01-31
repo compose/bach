@@ -235,44 +235,11 @@ var heyYou heyYou
 resp, _, errs := gorequest.New().Get("http://example.com/").EndStruct(&heyYou)
 ```
 
-## Retry 
-
-Supposing you need retry 3 times, with 5 seconds between each attempt when gets a BadRequest or a InternalServerError
-
-```go
-request := gorequest.New()
-resp, body, errs := request.Get("http://example.com/").
-                    Retry(3, 5 * time.seconds, http.StatusBadRequest, http.StatusInternalServerError).
-                    End()
-```
-
-## Handling Redirects
-
-Redirects can be handled with RedirectPolicy which behaves similarly to
-net/http Client's [CheckRedirect
-function](https://golang.org/pkg/net/http#Client). Simply specify a function
-which takes the Request about to be made and a slice of previous Requests in
-order of oldest first. When this function returns an error, the Request is not
-made.
-
-For example to redirect only to https endpoints:
-
-```go
-request := gorequest.New()
-resp, body, errs := request.Get("http://example.com/").
-                    RedirectPolicy(func(req Request, via []*Request) error {
-                      if req.URL.Scheme != "https" {
-                        return http.ErrUseLastResponse
-                      }
-                    }).
-                    End()
-```
-
 ## Debug
 
 For debugging, GoRequest leverages `httputil` to dump details of every request/response. (Thanks to @dafang)
 
-You can just use `SetDebug` or environment variable `GOREQUEST_DEBUG=0|1` to enable/disable debug mode and `SetLogger` to set your own choice of logger.
+You can just use `SetDebug` to enable/disable debug mode and `SetLogger` to set your own choice of logger.
 
 Thanks to @QuentinPerez, we can see even how gorequest is compared to CURL by using `SetCurlCommand`.
 

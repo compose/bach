@@ -1,5 +1,5 @@
 hash: 0a20bb0889c11279f6e11c2709430c91851316ff51a7425f080b14312fa8df73
-updated: 2017-01-31T08:09:54.878698736-08:00
+updated: 2017-01-31T12:24:51.504795028-08:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -8,11 +8,11 @@ imports:
 - name: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
 - name: github.com/compose/gocomposeapi
-  version: 306c242af7fb546010a86d7b1b31fd9dd1fd594c
+  version: a06a8301ba5dec3509a50da8ec8c00a6f3d25e7e
 - name: github.com/moul/http2curl
   version: 4e24498b31dba4683efb9d35c1c8a91e2eda28c8
 - name: github.com/parnurzeal/gorequest
-  version: f441e24175ffc865a6354b65375e537201c51382
+  version: 2aea80ce763523ecc6452e61c3727ae9595a5809
 - name: golang.org/x/net
   version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:

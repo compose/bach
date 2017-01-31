@@ -14,6 +14,10 @@
 
 package composeapi
 
+import (
+	"encoding/json"
+)
+
 // Account structure
 type Account struct {
 	ID   string `json:"id"`
@@ -25,4 +29,22 @@ type accountResponse struct {
 	Embedded struct {
 		Accounts []Account `json:"accounts"`
 	} `json:"_embedded"`
+}
+
+//GetAccountJSON gets JSON string from endpoint
+func (c *Client) GetAccountJSON() (string, []error) { return c.getJSON("accounts") }
+
+//GetAccount Gets first Account struct from account endpoint
+func (c *Client) GetAccount() (*Account, []error) {
+	body, errs := c.GetAccountJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	accountsResponse := accountResponse{}
+	json.Unmarshal([]byte(body), &accountsResponse)
+	firstAccount := accountsResponse.Embedded.Accounts[0]
+
+	return &firstAccount, nil
 }

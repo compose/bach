@@ -67,13 +67,6 @@ type SuperAgent struct {
 	Debug             bool
 	CurlCommand       bool
 	logger            *log.Logger
-	Retryable         struct {
-		RetryableStatus []int
-		RetryerTime     time.Duration
-		RetryerCount    int
-		Attempt         int
-		Enable          bool
-	}
 }
 
 var DisableTransportSwap = false
@@ -84,9 +77,6 @@ func New() *SuperAgent {
 		PublicSuffixList: publicsuffix.List,
 	}
 	jar, _ := cookiejar.New(&cookiejarOptions)
-
-	debug := os.Getenv("GOREQUEST_DEBUG") == "1"
-
 	s := &SuperAgent{
 		TargetType:        "json",
 		Data:              make(map[string]interface{}),
@@ -102,11 +92,11 @@ func New() *SuperAgent {
 		Cookies:           make([]*http.Cookie, 0),
 		Errors:            nil,
 		BasicAuth:         struct{ Username, Password string }{},
-		Debug:             debug,
+		Debug:             false,
 		CurlCommand:       false,
 		logger:            log.New(os.Stderr, "[gorequest]", log.LstdFlags),
 	}
-	// disable keep alives by default, see this issue https://github.com/parnurzeal/gorequest/issues/75
+	// desable keep alives by default, see this issue https://github.com/parnurzeal/gorequest/issues/75
 	s.Transport.DisableKeepAlives = true
 	return s
 }
@@ -240,39 +230,6 @@ func (s *SuperAgent) Set(param string, value string) *SuperAgent {
 	return s
 }
 
-// Retryable is used for setting a Retryer policy
-// Example. To set Retryer policy with 5 seconds between each attempt.
-//          3 max attempt.
-//          And StatusBadRequest and StatusInternalServerError as RetryableStatus
-
-//    gorequest.New().
-//      Post("/gamelist").
-//      Retry(3, 5 * time.seconds, http.StatusBadRequest, http.StatusInternalServerError).
-//      End()
-func (s *SuperAgent) Retry(retryerCount int, retryerTime time.Duration, statusCode ...int) *SuperAgent {
-	for _, code := range statusCode {
-		statusText := http.StatusText(code)
-		if len(statusText) == 0 {
-			s.Errors = append(s.Errors, errors.New("StatusCode '"+strconv.Itoa(code)+"' doesn't exist in http package"))
-		}
-	}
-
-	s.Retryable = struct {
-		RetryableStatus []int
-		RetryerTime     time.Duration
-		RetryerCount    int
-		Attempt         int
-		Enable          bool
-	}{
-		statusCode,
-		retryerTime,
-		retryerCount,
-		0,
-		true,
-	}
-	return s
-}
-
 // SetBasicAuth sets the basic authentication header
 // Example. To set the header for username "myuser" and password "mypass"
 //
@@ -375,8 +332,6 @@ func (s *SuperAgent) Query(content interface{}) *SuperAgent {
 		s.queryString(v.String())
 	case reflect.Struct:
 		s.queryStruct(v.Interface())
-	case reflect.Map:
-		s.queryMap(v.Interface())
 	default:
 	}
 	return s
@@ -392,22 +347,7 @@ func (s *SuperAgent) queryStruct(content interface{}) *SuperAgent {
 		} else {
 			for k, v := range val {
 				k = strings.ToLower(k)
-				var queryVal string
-				switch t := v.(type) {
-				case string:
-					queryVal = t
-				case float64:
-					queryVal = strconv.FormatFloat(t, 'f', -1, 64)
-				case time.Time:
-					queryVal = t.Format(time.RFC3339)
-				default:
-					j, err := json.Marshal(v)
-					if err != nil {
-						continue
-					}
-					queryVal = string(j)
-				}
-				s.QueryData.Add(k, queryVal)
+				s.QueryData.Add(k, v.(string))
 			}
 		}
 	}
@@ -433,10 +373,6 @@ func (s *SuperAgent) queryString(content string) *SuperAgent {
 		// TODO: need to check correct format of 'field=val&field=val&...'
 	}
 	return s
-}
-
-func (s *SuperAgent) queryMap(content interface{}) *SuperAgent {
-	return s.queryStruct(content)
 }
 
 // As Go conventions accepts ; as a synonym for &. (https://github.com/golang/go/issues/2210)
@@ -500,12 +436,6 @@ func (s *SuperAgent) Proxy(proxyUrl string) *SuperAgent {
 	return s
 }
 
-// RedirectPolicy accepts a function to define how to handle redirects. If the
-// policy function returns an error, the next Request is not made and the previous
-// request is returned.
-//
-// The policy function's arguments are the Request about to be made and the
-// past requests in order of oldest first.
 func (s *SuperAgent) RedirectPolicy(policy func(req Request, via []Request) error) *SuperAgent {
 	s.Client.CheckRedirect = func(r *http.Request, v []*http.Request) error {
 		vv := make([]Request, len(v))
@@ -585,8 +515,6 @@ func (s *SuperAgent) Send(content interface{}) *SuperAgent {
 		s.SendSlice(makeSliceOfReflectValue(v))
 	case reflect.Ptr:
 		s.Send(v.Elem().Interface())
-	case reflect.Map:
-		s.SendMap(v.Interface())
 	default:
 		// TODO: leave default for handling other types in the future, such as complex numbers, (nested) maps, etc
 		return s
@@ -614,10 +542,6 @@ func makeSliceOfReflectValue(v reflect.Value) (slice []interface{}) {
 func (s *SuperAgent) SendSlice(content []interface{}) *SuperAgent {
 	s.SliceData = append(s.SliceData, content...)
 	return s
-}
-
-func (s *SuperAgent) SendMap(content interface{}) *SuperAgent {
-	return s.SendStruct(content)
 }
 
 // SendStruct (similar to SendString) returns SuperAgent's itself for any next chain and takes content interface{} as a parameter.
@@ -928,55 +852,22 @@ func (s *SuperAgent) End(callback ...func(response Response, body string, errs [
 			},
 		}
 	}
-
 	resp, body, errs := s.EndBytes(bytesCallback...)
 	bodyString := string(body)
-
 	return resp, bodyString, errs
 }
 
 // EndBytes should be used when you want the body as bytes. The callbacks work the same way as with `End`, except that a byte array is used instead of a string.
 func (s *SuperAgent) EndBytes(callback ...func(response Response, body []byte, errs []error)) (Response, []byte, []error) {
-	var (
-		errs []error
-		resp Response
-		body []byte
-	)
-
-	for {
-		resp, body, errs = s.getResponseBytes()
-		if errs != nil {
-			return nil, nil, errs
-		}
-		if s.isRetryableRequest(resp) {
-			resp.Header.Set("Retry-Count", strconv.Itoa(s.Retryable.Attempt))
-			break
-		}
+	resp, body, errs := s.getResponseBytes()
+	if errs != nil {
+		return nil, nil, errs
 	}
-
 	respCallback := *resp
 	if len(callback) != 0 {
 		callback[0](&respCallback, body, s.Errors)
 	}
 	return resp, body, nil
-}
-
-func (s *SuperAgent) isRetryableRequest(resp Response) bool {
-	if s.Retryable.Enable && s.Retryable.Attempt < s.Retryable.RetryerCount && contains(resp.StatusCode, s.Retryable.RetryableStatus) {
-		time.Sleep(s.Retryable.RetryerTime)
-		s.Retryable.Attempt++
-		return false
-	}
-	return true
-}
-
-func contains(respStatus int, statuses []int) bool {
-	for _, status := range statuses {
-		if status == respStatus {
-			return true
-		}
-	}
-	return false
 }
 
 // EndStruct should be used when you want the body as a struct. The callbacks work the same way as with `End`, except that a struct is used instead of a string.

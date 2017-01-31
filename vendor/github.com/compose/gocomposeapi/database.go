@@ -14,12 +14,36 @@
 
 package composeapi
 
+import (
+	"encoding/json"
+)
+
 //Version structure
 type Version struct {
 	Application string `json:"application"`
 	Status      string `json:"status"`
 	Preferred   bool   `json:"preferred"`
 	Version     string `json:"version"`
+}
+
+//GetVersionsForDeploymentJSON returns raw JSON for getVersionsforDeployment
+func (c *Client) GetVersionsForDeploymentJSON(deploymentid string) (string, []error) {
+	return c.getJSON("deployments/" + deploymentid + "/versions")
+}
+
+//GetVersionsForDeployment gets deployment recipe life
+func (c *Client) GetVersionsForDeployment(deploymentid string) (*[]VersionTransition, []error) {
+	body, errs := c.GetVersionsForDeploymentJSON(deploymentid)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	versionsResponse := versionsResponse{}
+	json.Unmarshal([]byte(body), &versionsResponse)
+	versionTransitions := versionsResponse.Embedded.VersionTransitions
+
+	return &versionTransitions, nil
 }
 
 //Database structure
@@ -35,4 +59,24 @@ type databasesResponse struct {
 	Embedded struct {
 		Databases []Database `json:"applications"`
 	} `json:"_embedded"`
+}
+
+//GetDatabasesJSON gets databases available as a string
+func (c *Client) GetDatabasesJSON() (string, []error) {
+	return c.getJSON("databases")
+}
+
+//GetDatabases gets databases available as a Go struct
+func (c *Client) GetDatabases() (*[]Database, []error) {
+	body, errs := c.GetDatabasesJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	databaseResponse := databasesResponse{}
+	json.Unmarshal([]byte(body), &databaseResponse)
+	databases := databaseResponse.Embedded.Databases
+
+	return &databases, nil
 }
