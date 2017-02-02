@@ -17,6 +17,7 @@ package composeapi
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"strconv"
 	"time"
@@ -94,7 +95,7 @@ func (c *Client) CreateDeploymentJSON(params CreateDeploymentParams) (string, []
 		if err != nil {
 			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
 		} else {
-			errs = append(errs, errors.New(myerrors.Error))
+			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
 		}
 	}
 

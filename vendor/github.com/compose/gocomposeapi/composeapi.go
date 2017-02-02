@@ -47,7 +47,7 @@ type Link struct {
 
 //Errors struct for parsing error returns
 type Errors struct {
-	Error string `json:"errors,omitempty"`
+	Error map[string][]string `json:"errors,omitempty"`
 }
 
 func printJSON(jsontext string) {
@@ -80,7 +80,7 @@ func (c *Client) getJSON(endpoint string) (string, []error) {
 		if err != nil {
 			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
 		} else {
-			errs = append(errs, errors.New(myerrors.Error))
+			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
 		}
 	}
 	return body, errs
