@@ -123,7 +123,7 @@ func main() {
 		showDatacenters(client)
 	case "databases":
 		showDatabases(client)
-	case "deployment":
+	case "create":
 		createDeployment(client)
 	case "watch":
 		watchRecipe(client)
