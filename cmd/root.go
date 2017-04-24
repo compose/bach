@@ -51,7 +51,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&outputRaw, "raw", false, "Output raw JSON responses")
 	RootCmd.PersistentFlags().BoolVar(&outputJSON, "json", false, "Output post-processed JSON results")
 	RootCmd.PersistentFlags().BoolVar(&showFullCA, "fullca", false, "Show all of CA Certificates")
-	RootCmd.PersistentFlags().StringVar(&apiToken, "token", os.Getenv("COMPOSEAPITOKEN"), "Your API Token")
+	RootCmd.PersistentFlags().StringVar(&apiToken, "token", "Your API Token", "Your API Token")
 	RootCmd.PersistentFlags().BoolVar(&noDecodeCA, "nodecodeca", false, "Do not Decode base64 CA Certificates")
 }
 

@@ -1,22 +1,64 @@
-hash: 0a20bb0889c11279f6e11c2709430c91851316ff51a7425f080b14312fa8df73
-updated: 2017-02-02T03:26:08.700084939-08:00
+hash: d7c67c7ff1a2e104c23be8f65e940617203fc3d64dd3654c2138e8997f8cda38
+updated: 2017-04-24T17:02:41.173565664+01:00
 imports:
-- name: github.com/alecthomas/template
-  version: 9b92bd60296d66901ba44f41bdc78a38f60135a7
-  subpackages:
-  - parse
-- name: github.com/alecthomas/units
-  version: 9b92bd60296d66901ba44f41bdc78a38f60135a7
 - name: github.com/compose/gocomposeapi
-  version: 9b92bd60296d66901ba44f41bdc78a38f60135a7
+  version: 0a1620ff0ec033070b8f2007f6d83afd14740b01
+- name: github.com/fsnotify/fsnotify
+  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/hashicorp/hcl
+  version: 7fa7fff964d035e8a162cce3a164b3ad02ad651b
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/scanner
+  - hcl/strconv
+  - hcl/token
+  - json/parser
+  - json/scanner
+  - json/token
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/magiconair/properties
+  version: 51463bfca2576e06c62a8504b5c0f06d61312647
+- name: github.com/mitchellh/mapstructure
+  version: cc8532a8e9a55ea36402aa21efdf403a60d34096
 - name: github.com/moul/http2curl
-  version: 9b92bd60296d66901ba44f41bdc78a38f60135a7
+  version: 4e24498b31dba4683efb9d35c1c8a91e2eda28c8
 - name: github.com/parnurzeal/gorequest
-  version: ""
+  version: a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3
+- name: github.com/pelletier/go-buffruneio
+  version: c37440a7cf42ac63b919c752ca73a85067e05992
+- name: github.com/pelletier/go-toml
+  version: fe206efb84b2bc8e8cfafe6b4c1826622be969e3
+- name: github.com/pkg/errors
+  version: ff09b135c25aae272398c51a07235b90a75aa4f0
+- name: github.com/spf13/afero
+  version: 9be650865eab0c12963d8753212f4f9c66cdcf12
+  subpackages:
+  - mem
+- name: github.com/spf13/cast
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
+- name: github.com/spf13/cobra
+  version: f4f10f6873175e78bb1503da7e78c260a7f3ef63
+- name: github.com/spf13/jwalterweatherman
+  version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
+- name: github.com/spf13/pflag
+  version: 2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51
+- name: github.com/spf13/viper
+  version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
 - name: golang.org/x/net
-  version: 9b92bd60296d66901ba44f41bdc78a38f60135a7
+  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:
   - publicsuffix
-- name: gopkg.in/alecthomas/kingpin.v2
-  version: ""
+- name: golang.org/x/sys
+  version: ea9bcade75cb975a0b9738936568ab388b845617
+  subpackages:
+  - unix
+- name: golang.org/x/text
+  version: a9a820217f98f7c8a207ec1e45a874e1fe12c478
+  subpackages:
+  - transform
+  - unicode/norm
+- name: gopkg.in/yaml.v2
+  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
 testImports: []
