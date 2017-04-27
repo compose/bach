@@ -1,8 +1,8 @@
-hash: d7c67c7ff1a2e104c23be8f65e940617203fc3d64dd3654c2138e8997f8cda38
-updated: 2017-04-24T17:02:41.173565664+01:00
+hash: b56bcec53824c8dcccd3a0bbdf6fcfd1e14fa6876a89bbbca7fa53948aef6ecb
+updated: 2017-04-27T12:08:43.170258978+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: 0a1620ff0ec033070b8f2007f6d83afd14740b01
+  version: d366108e08f01ac193d8124ca431b8e0d795c592
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl

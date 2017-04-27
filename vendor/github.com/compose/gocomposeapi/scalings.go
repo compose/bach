@@ -16,10 +16,9 @@ package composeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+
 	"github.com/parnurzeal/gorequest"
-	"strconv"
 )
 
 // Scalings represents the used, allocated, starting and minimum unit scale
@@ -29,6 +28,7 @@ type Scalings struct {
 	UsedUnits      int `json:"used_units"`
 	StartingUnits  int `json:"starting_units"`
 	MinimumUnits   int `json:"minimum_units"`
+	UnitSizeInMB   int `json:"unit_size_in_mb"`
 }
 
 //ScalingsParams represents the parameters needed to scale a deployment
@@ -70,9 +70,9 @@ func (c *Client) SetScalingsJSON(params ScalingsParams) (string, []error) {
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
 		if err != nil {
-			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d", response.StatusCode))
 		} else {
-			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
 		}
 	}
 

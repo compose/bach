@@ -1,4 +1,2 @@
 package: github.com/compose/bach
-import:
-- package: github.com/compose/gocomposeapi
-
+import: []

@@ -16,11 +16,10 @@ package composeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/parnurzeal/gorequest"
-	"strconv"
 	"time"
+
+	"github.com/parnurzeal/gorequest"
 )
 
 // Deployment structure
@@ -93,9 +92,9 @@ func (c *Client) CreateDeploymentJSON(params CreateDeploymentParams) (string, []
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
 		if err != nil {
-			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d", response.StatusCode))
 		} else {
-			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
 		}
 	}
 
