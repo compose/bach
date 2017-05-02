@@ -46,7 +46,7 @@ to quickly create a Cobra application.`,
 			log.Fatal("Scale units must be integer")
 		}
 
-		params.Deployment.Units = scaleval
+		params.Units = scaleval
 		recipe, errs := c.SetScalings(params)
 		bailOnErrs(errs)
 		if !outputJSON {

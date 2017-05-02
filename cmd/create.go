@@ -48,13 +48,14 @@ var createCmd = &cobra.Command{
 		deploymentname := args[0]
 		dbtype := args[1]
 
-		params := composeAPI.CreateDeploymentParams{
-			Name:         deploymentname,
-			AccountID:    account.ID,
-			DatabaseType: dbtype,
-			Datacenter:   datacenterid,
-			ClusterID:    clusterid,
-		}
+		params :=
+			composeAPI.DeploymentParams{
+				Name:         deploymentname,
+				AccountID:    account.ID,
+				DatabaseType: dbtype,
+				Datacenter:   datacenterid,
+				ClusterID:    clusterid,
+			}
 
 		deployment, errs := c.CreateDeployment(params)
 		bailOnErrs(errs)

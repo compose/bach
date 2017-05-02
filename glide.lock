@@ -1,8 +1,8 @@
 hash: b56bcec53824c8dcccd3a0bbdf6fcfd1e14fa6876a89bbbca7fa53948aef6ecb
-updated: 2017-04-27T12:08:43.170258978+01:00
+updated: 2017-05-02T10:20:13.601736317+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: d366108e08f01ac193d8124ca431b8e0d795c592
+  version: 175841b4c4aaa5b1a7eb4abe3ce4249124a70e74
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
