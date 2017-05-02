@@ -16,11 +16,10 @@ package composeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/parnurzeal/gorequest"
-	"strconv"
 	"time"
+
+	"github.com/parnurzeal/gorequest"
 )
 
 // Deployment structure
@@ -55,7 +54,12 @@ type deploymentsResponse struct {
 }
 
 //CreateDeploymentParams Parameters to be completed before creating a deployment
-type CreateDeploymentParams struct {
+type createDeploymentParams struct {
+	Deployment DeploymentParams `json:"deployment"`
+}
+
+// DeploymentParams core parameters for a new deployment
+type DeploymentParams struct {
 	Name         string `json:"name"`
 	AccountID    string `json:"account_id"`
 	ClusterID    string `json:"cluster_id,omitempty"`
@@ -82,20 +86,22 @@ type versionsResponse struct {
 }
 
 //CreateDeploymentJSON performs the call
-func (c *Client) CreateDeploymentJSON(params CreateDeploymentParams) (string, []error) {
+func (c *Client) CreateDeploymentJSON(params DeploymentParams) (string, []error) {
+	deploymentparams := createDeploymentParams{Deployment: params}
+
 	response, body, errs := gorequest.New().Post(apibase+"deployments").
 		Set("Authorization", "Bearer "+c.apiToken).
 		Set("Content-type", "application/json; charset=utf-8").
-		Send(params).
+		Send(deploymentparams).
 		End()
 
 	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
 		if err != nil {
-			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
 		} else {
-			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
 		}
 	}
 
@@ -103,7 +109,7 @@ func (c *Client) CreateDeploymentJSON(params CreateDeploymentParams) (string, []
 }
 
 //CreateDeployment creates a deployment
-func (c *Client) CreateDeployment(params CreateDeploymentParams) (*Deployment, []error) {
+func (c *Client) CreateDeployment(params DeploymentParams) (*Deployment, []error) {
 
 	// This is a POST not a GET, so it builds its own request
 

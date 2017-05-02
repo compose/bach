@@ -16,11 +16,10 @@ package composeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/parnurzeal/gorequest"
 	"log"
-	"strconv"
+
+	"github.com/parnurzeal/gorequest"
 )
 
 var ()
@@ -29,10 +28,12 @@ const (
 	apibase = "https://api.compose.io/2016-07/"
 )
 
+// Client is a structure that holds session information for the API
 type Client struct {
 	apiToken string
 }
 
+// NewClient returns a Client for further interaction with the API
 func NewClient(apiToken string) (*Client, error) {
 	return &Client{
 		apiToken: apiToken,
@@ -78,9 +79,9 @@ func (c *Client) getJSON(endpoint string) (string, []error) {
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
 		if err != nil {
-			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
 		} else {
-			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
 		}
 	}
 	return body, errs

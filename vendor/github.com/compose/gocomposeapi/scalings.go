@@ -16,10 +16,9 @@ package composeapi
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
+
 	"github.com/parnurzeal/gorequest"
-	"strconv"
 )
 
 // Scalings represents the used, allocated, starting and minimum unit scale
@@ -29,14 +28,22 @@ type Scalings struct {
 	UsedUnits      int `json:"used_units"`
 	StartingUnits  int `json:"starting_units"`
 	MinimumUnits   int `json:"minimum_units"`
+	UnitSizeInMB   int `json:"unit_size_in_mb"`
 }
 
 //ScalingsParams represents the parameters needed to scale a deployment
 type ScalingsParams struct {
-	DeploymentID string `json:"-"`
-	Deployment   struct {
-		Units int `json:"units"`
-	} `json:"deployment"`
+	DeploymentID string
+	Units        int
+}
+
+type scalingsParams struct {
+	DeploymentID string               `json:"-"`
+	Deployment   scalingSettingParams `json:"deployment"`
+}
+
+type scalingSettingParams struct {
+	Units int `json:"units"`
 }
 
 //GetScalingsJSON returns raw scalings
@@ -60,19 +67,23 @@ func (c *Client) GetScalings(deploymentid string) (*Scalings, []error) {
 
 //SetScalingsJSON sets JSON scaling and returns string respones
 func (c *Client) SetScalingsJSON(params ScalingsParams) (string, []error) {
+	scalingsparams := scalingsParams{DeploymentID: params.DeploymentID,
+		Deployment: scalingSettingParams{Units: params.Units},
+	}
+
 	response, body, errs := gorequest.New().Post(apibase+"deployments/"+params.DeploymentID+"/scalings").
 		Set("Authorization", "Bearer "+c.apiToken).
 		Set("Content-type", "application/json; charset=utf-8").
-		Send(params).
+		Send(scalingsparams).
 		End()
 
 	if response.StatusCode != 200 { // Expect Accepted on success - assume error on anything else
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
 		if err != nil {
-			errs = append(errs, errors.New("Unable to parse error - status code "+strconv.Itoa(response.StatusCode)))
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
 		} else {
-			errs = append(errs, errors.New(fmt.Sprintf("%v", myerrors.Error)))
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
 		}
 	}
 
