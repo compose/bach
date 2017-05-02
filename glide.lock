@@ -1,8 +1,8 @@
-hash: b56bcec53824c8dcccd3a0bbdf6fcfd1e14fa6876a89bbbca7fa53948aef6ecb
-updated: 2017-05-02T10:20:13.601736317+01:00
+hash: 4e8db3541c218a8ba813e0f4d5a86f7cbbb3669a49824a4dda858a6d0d7f0fc4
+updated: 2017-05-02T11:19:24.607132121+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: 175841b4c4aaa5b1a7eb4abe3ce4249124a70e74
+  version: a2943f65889aabcd05c1276518703f7edb31cee2
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
@@ -39,26 +39,26 @@ imports:
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: f4f10f6873175e78bb1503da7e78c260a7f3ef63
+  version: 8f0203be891287870100e4af46262cdf4a4261d1
 - name: github.com/spf13/jwalterweatherman
   version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
 - name: github.com/spf13/pflag
-  version: 2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51
+  version: c990990ab4981d84da820b7b00c85139ca150b5f
 - name: github.com/spf13/viper
   version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
 - name: golang.org/x/net
-  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  version: da118f7b8e5954f39d0d2130ab35d4bf0e3cb344
   subpackages:
   - publicsuffix
 - name: golang.org/x/sys
-  version: ea9bcade75cb975a0b9738936568ab388b845617
+  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: a9a820217f98f7c8a207ec1e45a874e1fe12c478
+  version: 470f45bf29f4147d6fbd7dfd0a02a848e49f5bf4
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports: []

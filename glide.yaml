@@ -1,2 +1,5 @@
 package: github.com/compose/bach
-import: []
+import:
+- package: github.com/compose/gocomposeapi
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
