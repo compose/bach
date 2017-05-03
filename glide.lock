@@ -1,8 +1,8 @@
 hash: 4e8db3541c218a8ba813e0f4d5a86f7cbbb3669a49824a4dda858a6d0d7f0fc4
-updated: 2017-05-02T11:19:24.607132121+01:00
+updated: 2017-05-03T15:04:19.827474592+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: a2943f65889aabcd05c1276518703f7edb31cee2
+  version: 751c2839bf8be48d3e990958a35803987b261c8b
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
@@ -47,7 +47,7 @@ imports:
 - name: github.com/spf13/viper
   version: 0967fc9aceab2ce9da34061253ac10fb99bba5b2
 - name: golang.org/x/net
-  version: da118f7b8e5954f39d0d2130ab35d4bf0e3cb344
+  version: feeb485667d1fdabe727840fe00adc22431bc86e
   subpackages:
   - publicsuffix
 - name: golang.org/x/sys
