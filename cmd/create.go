@@ -23,6 +23,7 @@ import (
 
 var datacenterid string
 var clusterid string
+var version string
 
 // createCmd represents the deployment command
 var createCmd = &cobra.Command{
@@ -55,6 +56,7 @@ var createCmd = &cobra.Command{
 				DatabaseType: dbtype,
 				Datacenter:   datacenterid,
 				ClusterID:    clusterid,
+				Version:      version,
 			}
 
 		deployment, errs := c.CreateDeployment(params)
@@ -73,4 +75,5 @@ func init() {
 	RootCmd.AddCommand(createCmd)
 	createCmd.Flags().StringVar(&clusterid, "cluster", "", "Cluster Id")
 	createCmd.Flags().StringVar(&datacenterid, "datacenter", "", "Datacenter region")
+	createCmd.Flags().StringVar(&version, "version", "", "Database version required")
 }

@@ -20,6 +20,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var dbtype string
+var longoutput bool
+
 // deploymentsCmd represents the deployments command
 var deploymentsCmd = &cobra.Command{
 	Use:   "deployments",
@@ -37,12 +40,16 @@ var deploymentsCmd = &cobra.Command{
 
 			if !outputJSON {
 				for _, v := range *deployments {
-					fmt.Printf("%15s: %s\n", "ID", v.ID)
-					fmt.Printf("%15s: %s\n", "Name", v.Name)
-					fmt.Printf("%15s: %s\n", "Type", v.Type)
-					fmt.Printf("%15s: %s\n", "Created At", v.CreatedAt)
-					fmt.Printf("%15s: %s\n", "Web UI Link", getLink(v.Links.ComposeWebUILink))
-					fmt.Println()
+					if dbtype == "" || dbtype == v.Type {
+						fmt.Printf("%15s: %s\n", "ID", v.ID)
+						fmt.Printf("%15s: %s\n", "Name", v.Name)
+						fmt.Printf("%15s: %s\n", "Type", v.Type)
+						if longoutput {
+							fmt.Printf("%15s: %s\n", "Created At", v.CreatedAt)
+							fmt.Printf("%15s: %s\n", "Web UI Link", getLink(v.Links.ComposeWebUILink))
+						}
+						fmt.Println()
+					}
 				}
 			} else {
 				printAsJSON(deployments)
@@ -53,4 +60,6 @@ var deploymentsCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(deploymentsCmd)
+	deploymentsCmd.Flags().StringVar(&dbtype, "type", "", "Only this database type")
+	deploymentsCmd.Flags().BoolVar(&longoutput, "long", false, "Show all details")
 }
