@@ -12,18 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cmd
 
 import (
-	"github.com/compose/bach/cmd"
+	"fmt"
+
+	"github.com/spf13/cobra"
 )
 
-var version = "master"
+var bachVersion string
 
-//BachVersion accessible to other packages
-var BachVersion string
+// aboutCmd represents the about command
+var aboutCmd = &cobra.Command{
+	Use:   "about",
+	Short: "About Bach",
+	Long:  `Show version and other information about Bach`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("%15s: %s\n", "Bach Version", getVersion())
+	},
+}
 
-func main() {
-	cmd.SaveVersion(version)
-	cmd.Execute()
+func init() {
+	RootCmd.AddCommand(aboutCmd)
 }

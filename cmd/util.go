@@ -54,3 +54,14 @@ func printAsJSON(toprint interface{}) {
 func getLink(link composeAPI.Link) string {
 	return strings.Replace(link.HREF, "{?embed}", "", -1) // TODO: This should mangle the HREF properly
 }
+
+var savedVersion string
+
+//SaveVersion called from outside to retain version string
+func SaveVersion(version string) {
+	savedVersion = version
+}
+
+func getVersion() string {
+	return savedVersion
+}
