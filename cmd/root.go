@@ -28,6 +28,7 @@ var outputJSON bool
 var showFullCA bool
 var apiToken string
 var noDecodeCA bool
+var caEscaped bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -53,6 +54,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&showFullCA, "fullca", false, "Show all of CA Certificates")
 	RootCmd.PersistentFlags().StringVar(&apiToken, "token", "Your API Token", "Your API Token")
 	RootCmd.PersistentFlags().BoolVar(&noDecodeCA, "nodecodeca", false, "Do not Decode base64 CA Certificates")
+	RootCmd.PersistentFlags().BoolVar(&caEscaped, "caescaped", false, "Display full CAs as escaped strings")
 }
 
 // initConfig reads in config file and ENV variables if set.

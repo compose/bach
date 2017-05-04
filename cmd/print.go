@@ -77,7 +77,11 @@ func printDeployment(deployment composeAPI.Deployment) {
 				if err != nil {
 					log.Fatal(err)
 				}
-				fmt.Printf("%15s:\n%s", "CA Certificate", decoded)
+				if !caEscaped {
+					fmt.Printf("%15s:\n%s", "CA Certificate", decoded)
+				} else {
+					fmt.Printf("%15s: %q\n", "CA Certificate", decoded)
+				}
 			}
 		} else {
 			fmt.Printf("%15s: %s... (Use --fullca for certificate)\n", "CA Certificate", deployment.CACertificateBase64[0:32])
