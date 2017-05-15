@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	composeAPI "github.com/compose/gocomposeapi"
@@ -24,6 +25,8 @@ import (
 var datacenterid string
 var clusterid string
 var version string
+var ssl bool
+var wiredtiger bool
 
 // createCmd represents the deployment command
 var createCmd = &cobra.Command{
@@ -35,6 +38,8 @@ var createCmd = &cobra.Command{
 		if outputRaw {
 			log.Fatal("Raw mode not supported for createDeployment")
 		}
+		fmt.Println(len(args))
+
 		if len(args) != 2 {
 			log.Fatal("Need deployment name and deployment type")
 		}
@@ -43,7 +48,7 @@ var createCmd = &cobra.Command{
 		bailOnErrs(errs)
 
 		if datacenterid == "" && clusterid == "" {
-			log.Fatal("Must supply either a --cluster id or --datacenter region")
+			log.Fatal("Must supply either a --cluster id or --datacenter slug")
 		}
 
 		deploymentname := args[0]
@@ -57,6 +62,8 @@ var createCmd = &cobra.Command{
 				Datacenter:   datacenterid,
 				ClusterID:    clusterid,
 				Version:      version,
+				SSL:          ssl,
+				WiredTiger:   wiredtiger,
 			}
 
 		deployment, errs := c.CreateDeployment(params)
@@ -76,4 +83,6 @@ func init() {
 	createCmd.Flags().StringVar(&clusterid, "cluster", "", "Cluster Id")
 	createCmd.Flags().StringVar(&datacenterid, "datacenter", "", "Datacenter region")
 	createCmd.Flags().StringVar(&version, "version", "", "Database version required")
+	createCmd.Flags().BoolVar(&ssl, "ssl", false, "SSL required (where supported)")
+	createCmd.Flags().BoolVar(&wiredtiger, "wiredtiger", false, "Use WiredTiger storage (MongoDB only)")
 }
