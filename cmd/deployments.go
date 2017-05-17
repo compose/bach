@@ -16,18 +16,21 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"regexp"
 
 	"github.com/spf13/cobra"
 )
 
 var dbtype string
 var longoutput bool
+var filter string
 
 // deploymentsCmd represents the deployments command
 var deploymentsCmd = &cobra.Command{
 	Use:   "deployments",
-	Short: "Show Deployments attached to account",
-	Long:  `.`,
+	Short: "Show deployments attached to account",
+	Long:  `Show the database deployments attached to an account.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if outputRaw {
@@ -38,9 +41,14 @@ var deploymentsCmd = &cobra.Command{
 			deployments, errs := c.GetDeployments()
 			bailOnErrs(errs)
 
+			matcher, err := regexp.Compile(filter)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			if !outputJSON {
 				for _, v := range *deployments {
-					if dbtype == "" || dbtype == v.Type {
+					if (dbtype == "" || dbtype == v.Type) && matcher.MatchString(v.Name) {
 						fmt.Printf("%15s: %s\n", "ID", v.ID)
 						fmt.Printf("%15s: %s\n", "Name", v.Name)
 						fmt.Printf("%15s: %s\n", "Type", v.Type)
@@ -60,6 +68,7 @@ var deploymentsCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(deploymentsCmd)
-	deploymentsCmd.Flags().StringVar(&dbtype, "type", "", "Only this database type")
-	deploymentsCmd.Flags().BoolVar(&longoutput, "long", false, "Show all details")
+	deploymentsCmd.Flags().StringVarP(&dbtype, "type", "t", "", "Only this database type")
+	deploymentsCmd.Flags().BoolVarP(&longoutput, "long", "l", false, "Show all details")
+	deploymentsCmd.Flags().StringVarP(&filter, "filter", "f", "", "Regular expression to filter names on")
 }
