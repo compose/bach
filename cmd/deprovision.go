@@ -23,7 +23,7 @@ import (
 
 // deprovisionCmd represents the deprovision command
 var deprovisionCmd = &cobra.Command{
-	Use:   "deprovision",
+	Use:   "deprovision [deployment id]",
 	Short: "Deprovision a deployment",
 	Long:  `.`,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -23,7 +23,7 @@ import (
 
 // backupstartCmd represents the alerts command
 var backupstartCmd = &cobra.Command{
-	Use:   "start",
+	Use:   "start [deployment id]",
 	Short: "Start backups for a deployment",
 	Long:  `Start an on-demand backups for a deployment. Will return the recipe performing the backup.`,
 	Run: func(cmd *cobra.Command, args []string) {

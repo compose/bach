@@ -27,7 +27,7 @@ var restoressl bool
 
 // restoreCmd represents the deployment command
 var restoreCmd = &cobra.Command{
-	Use:   "restore",
+	Use:   "restore [deployment id] [backup id] [new deployment name]",
 	Short: "Restore a deployment",
 	Long:  `Restores a deployment. Requires deployment id, backup id, and new deployment name.`,
 	Run: func(cmd *cobra.Command, args []string) {

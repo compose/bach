@@ -23,7 +23,7 @@ import (
 
 // backuplistCmd represents the alerts command
 var backuplistCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "list [deployment id]",
 	Short: "Show Backups for deployment",
 	Long:  `Show the backups for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {

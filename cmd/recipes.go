@@ -23,7 +23,7 @@ import (
 
 // recipesCmd represents the recipes command
 var recipesCmd = &cobra.Command{
-	Use:   "recipes",
+	Use:   "recipes [deployment id]",
 	Short: "Show Recipes related to deployment",
 	Long:  `Print out all the recipes that have been invoked on a particular deployment`,
 	Run: func(cmd *cobra.Command, args []string) {

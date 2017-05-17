@@ -23,7 +23,7 @@ import (
 
 // alertsCmd represents the alerts command
 var alertsCmd = &cobra.Command{
-	Use:   "alerts",
+	Use:   "alerts [deployment id]",
 	Short: "Show Alerts for deployment",
 	Long:  `Show the alerts for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {

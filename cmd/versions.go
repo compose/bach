@@ -23,7 +23,7 @@ import (
 
 // versionsCmd represents the versions command
 var versionsCmd = &cobra.Command{
-	Use:   "versions",
+	Use:   "versions [deployment id]",
 	Short: "Show versions for deployment database",
 	Long:  `Shows all available upgrade versions for the database installed within a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {

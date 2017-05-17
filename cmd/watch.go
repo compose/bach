@@ -25,7 +25,7 @@ import (
 
 // watchCmd represents the watch command
 var watchCmd = &cobra.Command{
-	Use:   "watch",
+	Use:   "watch [recipe id]",
 	Short: "Watch a recipe status",
 	Long: `Polls a reciped, given as an id, at 5 second rate (or custom rate)
 	

@@ -30,7 +30,7 @@ var wiredtiger bool
 
 // createCmd represents the deployment command
 var createCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create [deployment name] [database type]",
 	Short: "Create a deployment",
 	Long:  `Creates a deployment. Requires deployment name and database type.`,
 	Run: func(cmd *cobra.Command, args []string) {
