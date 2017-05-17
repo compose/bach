@@ -23,7 +23,7 @@ import (
 
 // recipeCmd represents the recipe command
 var recipeCmd = &cobra.Command{
-	Use:   "recipe",
+	Use:   "recipe [recipe id]",
 	Short: "Show details of a recipe",
 	Long:  `Prints the details of a recipe based on its given id.`,
 	Run: func(cmd *cobra.Command, args []string) {

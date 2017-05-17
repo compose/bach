@@ -23,7 +23,7 @@ import (
 
 // scaleCmd represents the scale command
 var scaleCmd = &cobra.Command{
-	Use:   "scale",
+	Use:   "scale [deployment id]",
 	Short: "Show scale information for a deployment",
 	Long:  `Show Scale information (including unit size) for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {

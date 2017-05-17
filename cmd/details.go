@@ -23,7 +23,7 @@ import (
 
 // detailsCmd represents the details command
 var detailsCmd = &cobra.Command{
-	Use:   "details",
+	Use:   "details [deployment id]",
 	Short: "Show details for a deployment",
 	Long:  `Show the details for a deployment including connection strings and certificates`,
 	Run: func(cmd *cobra.Command, args []string) {
