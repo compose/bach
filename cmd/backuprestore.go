@@ -23,6 +23,7 @@ import (
 
 var restoreclusterid string
 var restoredatacenterid string
+var restoressl bool
 
 // restoreCmd represents the deployment command
 var restoreCmd = &cobra.Command{
@@ -34,8 +35,9 @@ var restoreCmd = &cobra.Command{
 		if outputRaw {
 			log.Fatal("Raw mode not supported for backup restore")
 		}
+
 		if len(args) != 3 {
-			log.Fatal("Need deployment name and deployment type")
+			log.Fatal("Need deployment id, backup id and new deployment name")
 		}
 
 		if restoredatacenterid == "" && restoreclusterid == "" {
@@ -52,6 +54,7 @@ var restoreCmd = &cobra.Command{
 			Name:         deploymentname,
 			Datacenter:   restoredatacenterid,
 			ClusterID:    restoreclusterid,
+			SSL:          ssl,
 		}
 
 		deployment, errs := c.RestoreBackup(params)
@@ -70,4 +73,5 @@ func init() {
 	backupsCmd.AddCommand(restoreCmd)
 	restoreCmd.Flags().StringVar(&restoreclusterid, "cluster", "", "Cluster Id")
 	restoreCmd.Flags().StringVar(&restoredatacenterid, "datacenter", "", "Datacenter region")
+	restoreCmd.Flags().BoolVar(&ssl, "ssl", false, "SSL required (where supported)")
 }
