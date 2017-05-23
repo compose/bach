@@ -54,7 +54,7 @@ type deploymentsResponse struct {
 }
 
 //CreateDeploymentParams Parameters to be completed before creating a deployment
-type createDeploymentParams struct {
+type CreateDeploymentParams struct {
 	Deployment DeploymentParams `json:"deployment"`
 }
 
@@ -87,7 +87,7 @@ type versionsResponse struct {
 
 //CreateDeploymentJSON performs the call
 func (c *Client) CreateDeploymentJSON(params DeploymentParams) (string, []error) {
-	deploymentparams := createDeploymentParams{Deployment: params}
+	deploymentparams := CreateDeploymentParams{Deployment: params}
 
 	response, body, errs := gorequest.New().Post(apibase+"deployments").
 		Set("Authorization", "Bearer "+c.apiToken).
@@ -160,4 +160,42 @@ func (c *Client) GetDeployment(deploymentid string) (*Deployment, []error) {
 	json.Unmarshal([]byte(body), &deployment)
 
 	return &deployment, nil
+}
+
+//DeprovisionDeploymentJSON performs the call
+func (c *Client) DeprovisionDeploymentJSON(deploymentID string) (string, []error) {
+
+	response, body, errs := gorequest.New().Delete(apibase+"deployments/"+deploymentID).
+		Set("Authorization", "Bearer "+c.apiToken).
+		Set("Content-type", "application/json; charset=utf-8").
+		End()
+
+	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
+		myerrors := Errors{}
+		err := json.Unmarshal([]byte(body), &myerrors)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
+		} else {
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
+		}
+	}
+
+	return body, errs
+}
+
+//DeprovisionDeployment deletes a deployment
+func (c *Client) DeprovisionDeployment(deploymentID string) (*Recipe, []error) {
+
+	// This is a POST not a GET, so it builds its own request
+
+	body, errs := c.DeprovisionDeploymentJSON(deploymentID)
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	deprovrecipe := Recipe{}
+	json.Unmarshal([]byte(body), &deprovrecipe)
+
+	return &deprovrecipe, nil
 }
