@@ -42,7 +42,7 @@ Flags:
       --nodecodeca     Do not Decode base64 CA Certificates
       --raw            Output raw JSON responses (disables --watch)
       --token string   Your API Token (default "Your API Token")
-      --wait           Automatically silently wait for a resulting recipe to complete
+      --wait           Automatically silently wait for a resulting recipe to finish
       --watch          Automatically watch a resulting recipe
 
 Use "bach [command] --help" for more information about a command.

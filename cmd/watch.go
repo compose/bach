@@ -67,7 +67,7 @@ var watchCmd = &cobra.Command{
 			fmt.Println()
 			printRecipe(*recipe)
 
-			if recipe.Status == "complete" {
+			if recipe.Status == "complete" || recipe.Status == "failed" {
 				return
 			}
 		}

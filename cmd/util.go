@@ -71,7 +71,7 @@ func watchRecipeTillComplete(client *composeAPI.Client, recipeid string) {
 			}
 		}
 
-		if recipe.Status == "complete" {
+		if recipe.Status == "complete" || recipe.Status == "failed" {
 			return
 		}
 	}

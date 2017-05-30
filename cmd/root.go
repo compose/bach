@@ -58,7 +58,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&noDecodeCA, "nodecodeca", false, "Do not Decode base64 CA Certificates")
 	RootCmd.PersistentFlags().BoolVar(&caEscaped, "caescaped", false, "Display full CAs as escaped strings")
 	RootCmd.PersistentFlags().BoolVar(&recipewatch, "watch", false, "Automatically watch a resulting recipe")
-	RootCmd.PersistentFlags().BoolVar(&recipewait, "wait", false, "Automatically silently wait for a resulting recipe to complete")
+	RootCmd.PersistentFlags().BoolVar(&recipewait, "wait", false, "Automatically silently wait for a resulting recipe to finish")
 
 }
 
