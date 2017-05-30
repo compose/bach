@@ -45,7 +45,7 @@ var backupstartCmd = &cobra.Command{
 				printAsJSON(recipe)
 			}
 
-			if recipewatch {
+			if recipewatch || recipewait {
 				watchRecipeTillComplete(c, recipe.ID)
 			}
 		}
