@@ -23,7 +23,7 @@ Available Commands:
   create      Create a deployment
   databases   List databases
   datacenters Lists available datacenters
-  deployments Show Deployments attached to account
+  deployments Show deployments attached to account
   deprovision Deprovision a deployment
   details     Show details for a deployment
   help        Help about any command
@@ -40,8 +40,9 @@ Flags:
   -h, --help           help for bach
       --json           Output post-processed JSON results
       --nodecodeca     Do not Decode base64 CA Certificates
-      --raw            Output raw JSON responses
+      --raw            Output raw JSON responses (disables --watch)
       --token string   Your API Token (default "Your API Token")
+      --watch          Automatically watch a resulting recipe
 
 Use "bach [command] --help" for more information about a command.
 ```
