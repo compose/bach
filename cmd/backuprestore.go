@@ -64,8 +64,12 @@ var restoreCmd = &cobra.Command{
 			printDeployment(*deployment)
 		} else {
 			printAsJSON(*deployment)
-
 		}
+
+		if recipewatch {
+			watchRecipeTillComplete(c, deployment.ProvisionRecipeID)
+		}
+
 	},
 }
 

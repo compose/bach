@@ -27,7 +27,7 @@ import (
 var watchCmd = &cobra.Command{
 	Use:   "watch [recipe id]",
 	Short: "Watch a recipe status",
-	Long: `Polls a reciped, given as an id, at 5 second rate (or custom rate)
+	Long: `Polls a recipe, given as an id, at 5 second rate (or custom rate)
 	
 		bach watch 58fe03c15c6efc0014000034 10
 		

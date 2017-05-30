@@ -35,6 +35,12 @@ func printRecipe(recipe composeAPI.Recipe) {
 	fmt.Printf("%15s: %d\n", "Child Recipes", len(recipe.Embedded.Recipes))
 }
 
+func printShortRecipe(recipe composeAPI.Recipe) {
+	fmt.Printf("%15s: %s\n", "Status", recipe.Status)
+	fmt.Printf("%15s: %s\n", "Status Detail", recipe.StatusDetail)
+	fmt.Printf("%15s: %s\n", "Updated At", recipe.UpdatedAt)
+}
+
 func printVersionTransitions(version composeAPI.VersionTransition) {
 	fmt.Printf("%15s: %s\n", "Application", version.Application)
 	fmt.Printf("%15s: %s\n", "Method", version.Method)

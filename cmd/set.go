@@ -51,6 +51,10 @@ var setCmd = &cobra.Command{
 		} else {
 			printAsJSON(*recipe)
 		}
+
+		if recipewatch {
+			watchRecipeTillComplete(c, recipe.ID)
+		}
 	},
 }
 
