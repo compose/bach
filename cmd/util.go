@@ -51,17 +51,23 @@ func watchRecipeTillComplete(client *composeAPI.Client, recipeid string) {
 
 		if lastRecipe == nil {
 			lastRecipe = recipe
-			fmt.Println()
-			printShortRecipe(*recipe)
+			if !recipewait {
+				fmt.Println()
+				printShortRecipe(*recipe)
+			}
 		} else {
 			if lastRecipe.Status == recipe.Status &&
 				lastRecipe.UpdatedAt == recipe.UpdatedAt &&
 				lastRecipe.StatusDetail == recipe.StatusDetail {
-				fmt.Print(".")
+				if !recipewait {
+					fmt.Print(".")
+				}
 			} else {
 				lastRecipe = recipe
-				fmt.Println()
-				printShortRecipe(*recipe)
+				if !recipewait {
+					fmt.Println()
+					printShortRecipe(*recipe)
+				}
 			}
 		}
 

@@ -30,6 +30,7 @@ var apiToken string
 var noDecodeCA bool
 var caEscaped bool
 var recipewatch bool
+var recipewait bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -57,6 +58,8 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&noDecodeCA, "nodecodeca", false, "Do not Decode base64 CA Certificates")
 	RootCmd.PersistentFlags().BoolVar(&caEscaped, "caescaped", false, "Display full CAs as escaped strings")
 	RootCmd.PersistentFlags().BoolVar(&recipewatch, "watch", false, "Automatically watch a resulting recipe")
+	RootCmd.PersistentFlags().BoolVar(&recipewait, "wait", false, "Automatically silently wait for a resulting recipe to complete")
+
 }
 
 // initConfig reads in config file and ENV variables if set.

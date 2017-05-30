@@ -73,7 +73,7 @@ var createCmd = &cobra.Command{
 			printAsJSON(*deployment)
 		}
 
-		if recipewatch {
+		if recipewatch || recipewait {
 			watchRecipeTillComplete(c, deployment.ProvisionRecipeID)
 		}
 	},
