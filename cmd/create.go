@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	composeAPI "github.com/compose/gocomposeapi"
@@ -38,7 +37,6 @@ var createCmd = &cobra.Command{
 		if outputRaw {
 			log.Fatal("Raw mode not supported for createDeployment")
 		}
-		fmt.Println(len(args))
 
 		if len(args) != 2 {
 			log.Fatal("Need deployment name and deployment type")
@@ -73,7 +71,10 @@ var createCmd = &cobra.Command{
 			printDeployment(*deployment)
 		} else {
 			printAsJSON(*deployment)
+		}
 
+		if recipewatch {
+			watchRecipeTillComplete(c, deployment.ProvisionRecipeID)
 		}
 	},
 }

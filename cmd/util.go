@@ -19,6 +19,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	composeAPI "github.com/compose/gocomposeapi"
 )
@@ -38,6 +39,36 @@ func getComposeAPI() (client *composeAPI.Client) {
 		log.Fatalf("Could not create compose client: %s", err.Error())
 	}
 	return client
+}
+
+func watchRecipeTillComplete(client *composeAPI.Client, recipeid string) {
+	var lastRecipe *composeAPI.Recipe
+
+	for {
+		time.Sleep(time.Duration(5) * time.Second)
+		recipe, errs := client.GetRecipe(recipeid)
+		bailOnErrs(errs)
+
+		if lastRecipe == nil {
+			lastRecipe = recipe
+			fmt.Println()
+			printShortRecipe(*recipe)
+		} else {
+			if lastRecipe.Status == recipe.Status &&
+				lastRecipe.UpdatedAt == recipe.UpdatedAt &&
+				lastRecipe.StatusDetail == recipe.StatusDetail {
+				fmt.Print(".")
+			} else {
+				lastRecipe = recipe
+				fmt.Println()
+				printShortRecipe(*recipe)
+			}
+		}
+
+		if recipe.Status == "complete" {
+			return
+		}
+	}
 }
 
 func bailOnErrs(errs []error) {
