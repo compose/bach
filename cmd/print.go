@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -71,6 +72,9 @@ func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "Name", deployment.Name)
 	fmt.Printf("%15s: %s\n", "Type", deployment.Type)
 	fmt.Printf("%15s: %s\n", "Created At", deployment.CreatedAt)
+	fmt.Printf("%15s: %s\n", "Notes", deployment.Notes)
+	fmt.Printf("%15s: %s\n", "Billing Code", deployment.CustomerBillingCode)
+
 	if deployment.ProvisionRecipeID != "" {
 		fmt.Printf("%15s: %s\n", "Prov Recipe ID", deployment.ProvisionRecipeID)
 	}
@@ -100,6 +104,14 @@ func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "SSHAdmin", deployment.Connection.SSHAdmin)
 	fmt.Printf("%15s: %s\n", "CLI Connect", deployment.Connection.CLI)
 	fmt.Printf("%15s: %s\n", "Direct Connect", deployment.Connection.Direct)
+
+	// Format the Misc connection as a JSON object
+	miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "", " ")
+	if err != nil {
+		fmt.Printf("%15s: %#v\n", "Misc Error", err)
+	} else {
+		fmt.Printf("%15s: %s\n", "Misc", string(miscbuf))
+	}
 
 }
 

@@ -31,6 +31,8 @@ type Deployment struct {
 	ProvisionRecipeID   string            `json:"provision_recipe_id,omitempty"`
 	CACertificateBase64 string            `json:"ca_certificate_base64,omitempty"`
 	Connection          ConnectionStrings `json:"connection_strings,omitempty"`
+	Notes               string            `json:"notes,omitempty"`
+	CustomerBillingCode string            `json:"customer_billing_code,omitempty"`
 	Links               struct {
 		ComposeWebUILink Link `json:"compose_web_ui"`
 	} `json:"_links"`
@@ -38,12 +40,13 @@ type Deployment struct {
 
 // ConnectionStrings structure, part of the Deployment struct
 type ConnectionStrings struct {
-	Health   string   `json:"health,omitempty"`
-	SSH      string   `json:"ssh,omitempty"`
-	Admin    string   `json:"admin,omitempty"`
-	SSHAdmin string   `json:"ssh_admin,omitempty"`
-	CLI      []string `json:"cli,omitempty"`
-	Direct   []string `json:"direct,omitempty"`
+	Health   string      `json:"health,omitempty"`
+	SSH      string      `json:"ssh,omitempty"`
+	Admin    string      `json:"admin,omitempty"`
+	SSHAdmin string      `json:"ssh_admin,omitempty"`
+	CLI      []string    `json:"cli,omitempty"`
+	Direct   []string    `json:"direct,omitempty"`
+	Misc     interface{} `json:"misc,omitempty"`
 }
 
 // deploymentsResource is used to represent and remove the JSON+HAL Embedded wrapper
