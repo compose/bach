@@ -15,49 +15,16 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-	"strconv"
-
-	composeAPI "github.com/compose/gocomposeapi"
 	"github.com/spf13/cobra"
 )
 
-// setCmd represents the set command
+// RootCmd represents the base command when called without any subcommands
 var setCmd = &cobra.Command{
-	Use:   "set [deployment id] [scale in integer units]",
-	Short: "Set scale for a deployment",
-	Long:  `Sets the number of resource units (storage/memory) that should be available.`,
-
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			log.Fatal("Need a deployment id and new units value")
-		}
-		c := getComposeAPI()
-
-		params := composeAPI.ScalingsParams{}
-		params.DeploymentID = args[0]
-		scaleval, err := strconv.Atoi(args[1])
-		if err != nil {
-			log.Fatal("Scale units must be integer")
-		}
-
-		params.Units = scaleval
-		recipe, errs := c.SetScalings(params)
-		bailOnErrs(errs)
-		if !outputJSON {
-			printRecipe(*recipe)
-			fmt.Println()
-		} else {
-			printAsJSON(*recipe)
-		}
-
-		if recipewatch {
-			watchRecipeTillComplete(c, recipe.ID)
-		}
-	},
+	Use:   "set",
+	Short: "Commands for setting parameters and values",
+	Long:  `A selection of subcommands are available for setting parameters and values`,
 }
 
 func init() {
-	scaleCmd.AddCommand(setCmd)
+	RootCmd.AddCommand(setCmd)
 }

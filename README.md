@@ -30,6 +30,7 @@ Available Commands:
   recipe      Show details of a recipe
   recipes     Show Recipes related to deployment
   scale       Show scale information for a deployment
+  set         Commands for setting parameters and values
   user        Show user information
   versions    Show versions for deployment database
   watch       Watch a recipe status

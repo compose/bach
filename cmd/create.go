@@ -26,6 +26,8 @@ var clusterid string
 var version string
 var ssl bool
 var wiredtiger bool
+var notes string
+var billingcode string
 
 // createCmd represents the deployment command
 var createCmd = &cobra.Command{
@@ -54,14 +56,16 @@ var createCmd = &cobra.Command{
 
 		params :=
 			composeAPI.DeploymentParams{
-				Name:         deploymentname,
-				AccountID:    account.ID,
-				DatabaseType: dbtype,
-				Datacenter:   datacenterid,
-				ClusterID:    clusterid,
-				Version:      version,
-				SSL:          ssl,
-				WiredTiger:   wiredtiger,
+				Name:                deploymentname,
+				AccountID:           account.ID,
+				DatabaseType:        dbtype,
+				Datacenter:          datacenterid,
+				ClusterID:           clusterid,
+				Version:             version,
+				SSL:                 ssl,
+				WiredTiger:          wiredtiger,
+				Notes:               notes,
+				CustomerBillingCode: billingcode,
 			}
 
 		deployment, errs := c.CreateDeployment(params)
@@ -86,4 +90,6 @@ func init() {
 	createCmd.Flags().StringVar(&version, "version", "", "Database version required")
 	createCmd.Flags().BoolVar(&ssl, "ssl", false, "SSL required (where supported)")
 	createCmd.Flags().BoolVar(&wiredtiger, "wiredtiger", false, "Use WiredTiger storage (MongoDB only)")
+	createCmd.Flags().StringVar(&notes, "notes", "", "Customer notes")
+	createCmd.Flags().StringVar(&billingcode, "code", "", "Customer billing code")
 }

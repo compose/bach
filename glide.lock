@@ -1,8 +1,8 @@
-hash: 6cffe8b60e9e8f7c580a571795378fe06658635046c20eb2a91f09bd9c0b0ccd
-updated: 2017-06-19T15:12:13.570548656+01:00
+hash: 6c202d8b0de8ab45b46717efa9f91245d5ebe862c9fbb16beef7973c005c5f94
+updated: 2017-06-29T13:43:52.738354364+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: db0ea99fc1b191b83881465bb6480384352092bd
+  version: 65e56d760fea08bde192a60fb3ffad0ada588cb0
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
@@ -26,10 +26,8 @@ imports:
   version: 4e24498b31dba4683efb9d35c1c8a91e2eda28c8
 - name: github.com/parnurzeal/gorequest
   version: a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3
-- name: github.com/pelletier/go-buffruneio
-  version: c37440a7cf42ac63b919c752ca73a85067e05992
 - name: github.com/pelletier/go-toml
-  version: fe7536c3dee2596cdd23ee9976a17c22bdaae286
+  version: 69d355db5304c0f7f809a2edc054553e7142f016
 - name: github.com/pkg/errors
   version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/spf13/afero
@@ -39,7 +37,7 @@ imports:
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: b4dbd37a01839e0653eec12aa4bbb2a2ce7b2a37
+  version: 8c6fa02d2225de0f9bdcb7ca912556f68d172d8c
 - name: github.com/spf13/jwalterweatherman
   version: 0efa5202c04663c757d84f90f5219c1250baf94f
 - name: github.com/spf13/pflag
@@ -47,15 +45,15 @@ imports:
 - name: github.com/spf13/viper
   version: c1de95864d73a5465492829d7cb2dd422b19ac96
 - name: golang.org/x/net
-  version: 973f3f3bbd50e92b13faa6c53ec16f49b45e851c
+  version: c8c74377599bd978aee1cf3b9b63a8634051cec2
   subpackages:
   - publicsuffix
 - name: golang.org/x/sys
-  version: fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a
+  version: 90796e5a05ce440b41c768bd9af257005e470461
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 9e2f80a6ba7ed4ba13e0cd4b1f094bf916875735
+  version: 6353ef0f924300eea566d3438817aa4d3374817e
   subpackages:
   - transform
   - unicode/norm
