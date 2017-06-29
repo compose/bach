@@ -97,20 +97,40 @@ func printDeployment(deployment composeAPI.Deployment) {
 			fmt.Printf("%15s: %s... (Use --fullca for certificate)\n", "CA Certificate", deployment.CACertificateBase64[0:32])
 		}
 	}
-	fmt.Printf("%15s: %s\n", "Web UI Link", getLink(deployment.Links.ComposeWebUILink))
-	fmt.Printf("%15s: %s\n", "Health", deployment.Connection.Health)
-	fmt.Printf("%15s: %s\n", "SSH", deployment.Connection.SSH)
-	fmt.Printf("%15s: %s\n", "Admin", deployment.Connection.Admin)
-	fmt.Printf("%15s: %s\n", "SSHAdmin", deployment.Connection.SSHAdmin)
-	fmt.Printf("%15s: %s\n", "CLI Connect", deployment.Connection.CLI)
-	fmt.Printf("%15s: %s\n", "Direct Connect", deployment.Connection.Direct)
 
-	// Format the Misc connection as a JSON object
-	miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "", " ")
-	if err != nil {
-		fmt.Printf("%15s: %#v\n", "Misc Error", err)
-	} else {
-		fmt.Printf("%15s: %s\n", "Misc", string(miscbuf))
+	if showLinks {
+		fmt.Printf("%15s: %s\n", "Web UI Link", getLink(deployment.Links.ComposeWebUILink))
+		fmt.Printf("%15s: %s\n", "Alerts Link", getLink(deployment.Links.AlertsLink))
+		fmt.Printf("%15s: %s\n", "Cluster Link", getLink(deployment.Links.ClusterLink))
+		fmt.Printf("%15s: %s\n", "Scalings Link", getLink(deployment.Links.ScalingsLink))
+	}
+
+	if len(deployment.Connection.Health) > 0 {
+		fmt.Printf("%15s: %s\n", "Health", deployment.Connection.Health)
+	}
+	if len(deployment.Connection.SSH) > 0 {
+		fmt.Printf("%15s: %s\n", "SSH", deployment.Connection.SSH)
+	}
+	if len(deployment.Connection.Admin) > 0 {
+		fmt.Printf("%15s: %s\n", "Admin", deployment.Connection.Admin)
+	}
+	if len(deployment.Connection.SSHAdmin) > 0 {
+		fmt.Printf("%15s: %s\n", "SSHAdmin", deployment.Connection.SSHAdmin)
+	}
+	if len(deployment.Connection.CLI) > 0 {
+		fmt.Printf("%15s: %s\n", "CLI Connect", deployment.Connection.CLI)
+	}
+	if len(deployment.Connection.Direct) > 0 {
+		fmt.Printf("%15s: %s\n", "Direct Connect", deployment.Connection.Direct)
+	}
+	if len(deployment.Connection.Misc.(map[string]interface{})) > 0 {
+		// Format the Misc connection as a JSON object
+		miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "", " ")
+		if err != nil {
+			fmt.Printf("%15s: %#v\n", "Misc Error", err)
+		} else {
+			fmt.Printf("%15s: %s\n", "Misc", string(miscbuf))
+		}
 	}
 
 }

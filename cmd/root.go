@@ -31,6 +31,7 @@ var noDecodeCA bool
 var caEscaped bool
 var recipewatch bool
 var recipewait bool
+var showLinks bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -59,6 +60,7 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&caEscaped, "caescaped", false, "Display full CAs as escaped strings")
 	RootCmd.PersistentFlags().BoolVar(&recipewatch, "watch", false, "Automatically watch a resulting recipe")
 	RootCmd.PersistentFlags().BoolVar(&recipewait, "wait", false, "Automatically silently wait for a resulting recipe to finish")
+	RootCmd.PersistentFlags().BoolVar(&showLinks, "links", false, "Show HATEOS links")
 
 }
 
