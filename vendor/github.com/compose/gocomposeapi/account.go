@@ -31,6 +31,12 @@ type accountResponse struct {
 	} `json:"_embedded"`
 }
 
+type accountUsersResponse struct {
+	Embedded struct {
+		Users []User `json:"users"`
+	} `json:"_embedded"`
+}
+
 //GetAccountJSON gets JSON string from endpoint
 func (c *Client) GetAccountJSON() (string, []error) { return c.getJSON("accounts") }
 
@@ -47,4 +53,27 @@ func (c *Client) GetAccount() (*Account, []error) {
 	firstAccount := accountsResponse.Embedded.Accounts[0]
 
 	return &firstAccount, nil
+}
+
+//GetAccountUsersJSON gets the JSON string from the users endpoint for this account
+func (c *Client) GetAccountUsersJSON() (string, []error) {
+	account, errs := c.GetAccount()
+	if errs != nil {
+		return "", errs
+	}
+	return c.getJSON("accounts/" + account.ID + "/users")
+}
+
+//GetAccountUsers gets the user array for the current account
+func (c *Client) GetAccountUsers() ([]User, []error) {
+	body, errs := c.GetAccountUsersJSON()
+
+	if errs != nil {
+		return nil, errs
+	}
+
+	accountUsersResponse := accountUsersResponse{}
+	json.Unmarshal([]byte(body), &accountUsersResponse)
+
+	return accountUsersResponse.Embedded.Users, nil
 }

@@ -20,7 +20,8 @@ import (
 
 // User structure
 type User struct {
-	ID string `json:"id"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 //GetUserJSON returns user JSON string
