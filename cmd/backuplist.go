@@ -21,7 +21,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// backuplistCmd represents the alerts command
+// backuplistCmd represents the backups list command
 var backuplistCmd = &cobra.Command{
 	Use:   "list [deployment id]",
 	Short: "Show Backups for deployment",

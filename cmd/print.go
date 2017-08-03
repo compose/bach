@@ -23,6 +23,10 @@ import (
 	composeAPI "github.com/compose/gocomposeapi"
 )
 
+//
+// A selection of helper utilities to print common structs
+//
+
 func printRecipe(recipe composeAPI.Recipe) {
 	fmt.Printf("%15s: %s\n", "ID", recipe.ID)
 	fmt.Printf("%15s: %s\n", "Template", recipe.Template)

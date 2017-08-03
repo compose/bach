@@ -38,7 +38,6 @@ var usersCmd = &cobra.Command{
 				for _, user := range users {
 					fmt.Printf("%15s: %s\n", "ID", user.ID)
 					fmt.Printf("%15s: %s\n", "Name", user.Name)
-
 					fmt.Println()
 				}
 			} else {
@@ -50,5 +49,4 @@ var usersCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(usersCmd)
-
 }

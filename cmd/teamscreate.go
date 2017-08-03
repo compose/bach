@@ -22,7 +22,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// teamsCreateCmd represents the alerts command
+// teamsCreateCmd represents the teams create command
 var teamsCreateCmd = &cobra.Command{
 	Use:   "create [team name]",
 	Short: "Create named team",

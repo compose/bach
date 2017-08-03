@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// setCmd represents the set command
+// setCmd represents the scale set command
 var setCmd = &cobra.Command{
 	Use:   "set [deployment id] [scale in integer units]",
 	Short: "Set scale for a deployment",

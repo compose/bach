@@ -26,7 +26,7 @@ var dbtype string
 var longoutput bool
 var filter string
 
-// deploymentsCmd represents the deployments command
+// deploymentsCmd represents the list deployments command
 var deploymentsCmd = &cobra.Command{
 	Use:   "deployments",
 	Short: "Show deployments attached to account",

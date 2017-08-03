@@ -27,7 +27,7 @@ var version string
 var ssl bool
 var wiredtiger bool
 
-// createCmd represents the deployment command
+// createCmd represents the create-deployment command
 var createCmd = &cobra.Command{
 	Use:   "create [deployment name] [database type]",
 	Short: "Create a deployment",
