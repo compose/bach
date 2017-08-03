@@ -136,3 +136,11 @@ func printScalings(scalings composeAPI.Scalings) {
 	fmt.Printf("%15s: %d\n", "Starting Units", scalings.StartingUnits)
 	fmt.Printf("%15s: %d\n", "Minimum Units", scalings.MinimumUnits)
 }
+
+func printTeam(team composeAPI.Team) {
+	fmt.Printf("%15s: %s\n", "Team ID", team.ID)
+	fmt.Printf("%15s: %s\n", "Team Name", team.Name)
+	for _, user := range team.Users {
+		fmt.Printf("%15s: %s/%s\n", "Member", user.Name, user.ID)
+	}
+}
