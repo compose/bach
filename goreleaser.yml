@@ -1,7 +1,7 @@
 # goreleaser.yml
 # Build customization
 build:
-  binary_name: bach
+  binary: bach
   goos:
     - windows
     - darwin
