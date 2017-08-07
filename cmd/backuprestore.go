@@ -25,8 +25,8 @@ var restoreclusterid string
 var restoredatacenterid string
 var restoressl bool
 
-// restoreCmd represents the deployment command
-var restoreCmd = &cobra.Command{
+// backuprestoreCmd represents the backups restore command
+var backuprestoreCmd = &cobra.Command{
 	Use:   "restore [deployment id] [backup id] [new deployment name]",
 	Short: "Restore a deployment",
 	Long:  `Restores a deployment. Requires deployment id, backup id, and new deployment name.`,
@@ -74,8 +74,8 @@ var restoreCmd = &cobra.Command{
 }
 
 func init() {
-	backupsCmd.AddCommand(restoreCmd)
-	restoreCmd.Flags().StringVar(&restoreclusterid, "cluster", "", "Cluster Id")
-	restoreCmd.Flags().StringVar(&restoredatacenterid, "datacenter", "", "Datacenter region")
-	restoreCmd.Flags().BoolVar(&ssl, "ssl", false, "SSL required (where supported)")
+	backupsCmd.AddCommand(backuprestoreCmd)
+	backuprestoreCmd.Flags().StringVar(&restoreclusterid, "cluster", "", "Cluster Id")
+	backuprestoreCmd.Flags().StringVar(&restoredatacenterid, "datacenter", "", "Datacenter region")
+	backuprestoreCmd.Flags().BoolVar(&ssl, "ssl", false, "SSL required (where supported)")
 }

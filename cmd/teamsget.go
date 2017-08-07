@@ -22,7 +22,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// teamslistCmd represents the alerts command
+// teamslistCmd represents the teams get command
 var teamsgetCmd = &cobra.Command{
 	Use:   "get",
 	Short: "get team details",

@@ -21,7 +21,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// backupstartCmd represents the alerts command
+// backupstartCmd represents the backups start command
 var backupstartCmd = &cobra.Command{
 	Use:   "start [deployment id]",
 	Short: "Start backups for a deployment",

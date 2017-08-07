@@ -17,7 +17,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RootCmd represents the base command when called without any subcommands
+// teamsCmd represents the teams subcommand
 var teamsCmd = &cobra.Command{
 	Use:   "teams",
 	Short: "Commands for teams",

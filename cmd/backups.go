@@ -17,7 +17,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RootCmd represents the base command when called without any subcommands
+// RootCmd represents the backups subcommand
 var backupsCmd = &cobra.Command{
 	Use:   "backups",
 	Short: "Commands for backups",

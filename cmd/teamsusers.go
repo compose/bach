@@ -97,7 +97,14 @@ var teamsremCmd = &cobra.Command{
 	},
 }
 
+var teamsUserCmd = &cobra.Command{
+	Use:   "user",
+	Short: "Commands for team users",
+	Long:  `A selection of subcommands are available for listing, modifying and deleting team users`,
+}
+
 func init() {
-	teamsCmd.AddCommand(teamsaddCmd)
-	teamsCmd.AddCommand(teamsremCmd)
+	teamsCmd.AddCommand(teamsUserCmd)
+	teamsUserCmd.AddCommand(teamsaddCmd)
+	teamsUserCmd.AddCommand(teamsremCmd)
 }
