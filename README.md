@@ -3,10 +3,30 @@
 Bach is a Go-based application which uses the Compose API to provide the ability
 to create, monitor and delete Compose databases.
 
-To use, an environment variable - COMPOSEAPITOKEN must be set. This token value
+To use, an environment variable - `COMPOSEAPITOKEN` must be set. This token value
 can be obtained from the Compose console's Account view.
 
 Further details to follow.
+
+## Installing
+
+You can install `bach` using Homebrew (for macOS), downloading the binaries from Github, or building from source.
+
+### Homebrew
+
+```
+brew install bach
+```
+
+### Download binaries from Github
+
+Use the [releases](https://github.com/compose/bach/releases) page.
+
+### Building from source
+
+To be explained.
+
+## Usage
 
 ```
 Bach is designed as simple route to accessing the Compose API
