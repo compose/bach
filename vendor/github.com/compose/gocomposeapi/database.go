@@ -16,6 +16,9 @@ package composeapi
 
 import (
 	"encoding/json"
+	"fmt"
+
+	"github.com/parnurzeal/gorequest"
 )
 
 //Version structure
@@ -44,6 +47,44 @@ func (c *Client) GetVersionsForDeployment(deploymentid string) (*[]VersionTransi
 	versionTransitions := versionsResponse.Embedded.VersionTransitions
 
 	return &versionTransitions, nil
+}
+
+func (c *Client) UpdateVersionJSON(deploymentID string, version string) (string, []error) {
+	patchParams := patchDeploymentVersionParams{
+		Deployment: deploymentVersion{Version: version},
+	}
+
+	response, body, errs := gorequest.New().
+		Patch(apibase+"deployments/"+deploymentID+"/versions").
+		Set("Authorization", "Bearer "+c.apiToken).
+		Set("Content-type", "application/json; charset=utf-8").
+		Send(patchParams).
+		End()
+
+	if response.StatusCode != 200 { // Expect OK on success - assume error on anything else
+		myErrors := Errors{}
+		err := json.Unmarshal([]byte(body), &myErrors)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
+				response.StatusCode, body))
+		} else {
+			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
+		}
+	}
+
+	return body, errs
+}
+
+func (c *Client) UpdateVersion(deploymentID, version string) (*Recipe, []error) {
+	body, errs := c.UpdateVersionJSON(deploymentID, version)
+	if errs != nil {
+		return nil, errs
+	}
+
+	recipe := Recipe{}
+	json.Unmarshal([]byte(body), &recipe)
+
+	return &recipe, nil
 }
 
 //Database structure

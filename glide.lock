@@ -1,8 +1,8 @@
-hash: 6cffe8b60e9e8f7c580a571795378fe06658635046c20eb2a91f09bd9c0b0ccd
-updated: 2017-08-03T10:40:36.464358738+01:00
+hash: 7eea2ba15af61ba8033055361c3b91c3d2d8f755e921b108d73f2514cfe9f584
+updated: 2017-08-21T10:34:54.589880903+01:00
 imports:
 - name: github.com/compose/gocomposeapi
-  version: 4c72ecfcd7106d43013c58453543bd73e5d8cbde
+  version: bdc1491a47001b445cc387edc3849ff6ec25c05c
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/hashicorp/hcl
@@ -27,7 +27,7 @@ imports:
 - name: github.com/parnurzeal/gorequest
   version: a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3
 - name: github.com/pelletier/go-toml
-  version: 69d355db5304c0f7f809a2edc054553e7142f016
+  version: 4692b8f9babfc93db58cc592ba2689d8736781de
 - name: github.com/pkg/errors
   version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/spf13/afero
@@ -37,7 +37,7 @@ imports:
 - name: github.com/spf13/cast
   version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: b26b538f693051ac6518e65672de3144ce3fbedc
+  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
 - name: github.com/spf13/jwalterweatherman
   version: 0efa5202c04663c757d84f90f5219c1250baf94f
 - name: github.com/spf13/pflag
@@ -45,18 +45,18 @@ imports:
 - name: github.com/spf13/viper
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: golang.org/x/net
-  version: f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f
+  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:
   - publicsuffix
 - name: golang.org/x/sys
-  version: d6c3f2be455466eedffcfc91793e2c808b7a7410
+  version: 07c182904dbd53199946ba614a412c61d3c548f5
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 3bd178b88a8180be2df394a1fbb81313916f0e7b
+  version: e56139fd9c5bc7244c76116c68e500765bb6db6b
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 25c4ec802a7d637f88d584ab26798e94ad14c13b
+  version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
 testImports: []

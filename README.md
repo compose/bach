@@ -8,9 +8,8 @@ can be obtained from the Compose console's Account view.
 
 Further details to follow.
 
+## Bach commands
 ```
-Bach is designed as simple route to accessing the Compose API
-
 Usage:
   bach [command]
 
@@ -30,7 +29,9 @@ Available Commands:
   recipe      Show details of a recipe
   recipes     Show Recipes related to deployment
   scale       Show scale information for a deployment
+  teams       Commands for teams
   user        Show user information
+  users       Show all users on account
   versions    Show versions for deployment database
   watch       Watch a recipe status
 
@@ -44,6 +45,26 @@ Flags:
       --token string   Your API Token (default "Your API Token")
       --wait           Automatically silently wait for a resulting recipe to finish
       --watch          Automatically watch a resulting recipe
-
+    
 Use "bach [command] --help" for more information about a command.
+```
+
+## Bach subcommands
+```
+bach backups [command]
+  get         Show Backup details for deployment
+  list        Show Backups for deployment
+  restore     Restore a deployment
+  start       Start backups for a deployment
+
+bach teams [command]
+  create      Create named team
+  get         get team details
+  list        Show teams
+  user        Commands for team users
+
+bach teams user [command]
+  add         add user to a team
+  rem         removes user from a team
+
 ```

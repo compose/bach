@@ -33,6 +33,7 @@ type Deployment struct {
 	Connection          ConnectionStrings `json:"connection_strings,omitempty"`
 	Notes               string            `json:"notes,omitempty"`
 	CustomerBillingCode string            `json:"customer_billing_code,omitempty"`
+	Version             string            `json:"version,omitempty"`
 	Links               Links             `json:"_links"`
 }
 
@@ -112,6 +113,14 @@ type versionsResponse struct {
 	Embedded struct {
 		VersionTransitions []VersionTransition `json:"transitions"`
 	} `json:"_embedded"`
+}
+
+type patchDeploymentVersionParams struct {
+	Deployment deploymentVersion `json:"deployment"`
+}
+
+type deploymentVersion struct {
+	Version string `json:"version"`
 }
 
 //CreateDeploymentJSON performs the call
@@ -200,7 +209,7 @@ func (c *Client) GetDeploymentByName(deploymentName string) (*Deployment, []erro
 
 	for _, deployment := range *deployments {
 		if deployment.Name == deploymentName {
-			return &deployment, nil
+			return c.GetDeployment(deployment.ID)
 		}
 	}
 
