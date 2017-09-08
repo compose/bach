@@ -9,7 +9,10 @@ can be obtained from the Compose console's Account view.
 Further details to follow.
 
 ## Bach commands
-```
+
+```text
+Bach is designed as simple route to accessing the Compose API
+
 Usage:
   bach [command]
 
@@ -18,6 +21,7 @@ Available Commands:
   account     Show Account Details
   alerts      Show Alerts for deployment
   backups     Commands for backups
+  cacert      Returns the self-signed cert for the deployment
   clusters    Show clusters
   create      Create a deployment
   databases   List databases
@@ -45,12 +49,13 @@ Flags:
       --token string   Your API Token (default "Your API Token")
       --wait           Automatically silently wait for a resulting recipe to finish
       --watch          Automatically watch a resulting recipe
-    
+
 Use "bach [command] --help" for more information about a command.
 ```
 
 ## Bach subcommands
-```
+
+```text
 bach backups [command]
   get         Show Backup details for deployment
   list        Show Backups for deployment
