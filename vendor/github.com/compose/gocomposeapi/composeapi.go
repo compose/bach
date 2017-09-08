@@ -11,18 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
+// Package composeapi provides an idiomatic Go wrapper around the Compose
+// API for database platform for deployment, management and monitoring.
 package composeapi
 
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 
 	"github.com/parnurzeal/gorequest"
 )
-
-var ()
 
 const (
 	apibase = "https://api.compose.io/2016-07/"
@@ -30,14 +33,34 @@ const (
 
 // Client is a structure that holds session information for the API
 type Client struct {
-	apiToken string
+	apiToken      string
+	logger        *log.Logger
+	enableLogging bool
 }
 
 // NewClient returns a Client for further interaction with the API
 func NewClient(apiToken string) (*Client, error) {
 	return &Client{
 		apiToken: apiToken,
+		logger:   log.New(ioutil.Discard, "", 0),
 	}, nil
+}
+
+// SetLogger can enable or disable http logging to and from the Compose
+// API endpoint using the provided io.Writer for the provided client.
+func (c *Client) SetLogger(enableLogging bool, logger io.Writer) *Client {
+	c.logger = log.New(logger, "[composeapi]", log.LstdFlags)
+	c.enableLogging = enableLogging
+	return c
+}
+
+func (c *Client) newRequest(method, targetURL string) *gorequest.SuperAgent {
+	return gorequest.New().
+		CustomMethod(method, targetURL).
+		Set("Authorization", "Bearer "+c.apiToken).
+		Set("Content-type", "application/json; charset=utf-8").
+		SetLogger(c.logger).
+		SetDebug(c.enableLogging)
 }
 
 // Link structure for JSON+HAL links
@@ -71,10 +94,8 @@ func (c *Client) SetAPIToken(newtoken string) {
 
 //GetJSON Gets JSON string of content at an endpoint
 func (c *Client) getJSON(endpoint string) (string, []error) {
-	response, body, errs := gorequest.New().Get(apibase+endpoint).
-		Set("Authorization", "Bearer "+c.apiToken).
-		Set("Content-type", "json").
-		End()
+	response, body, errs := c.newRequest("GET", apibase+endpoint).End()
+
 	if response.StatusCode != 200 {
 		myerrors := Errors{}
 		err := json.Unmarshal([]byte(body), &myerrors)
