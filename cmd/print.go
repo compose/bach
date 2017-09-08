@@ -78,6 +78,8 @@ func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "Created At", deployment.CreatedAt)
 	fmt.Printf("%15s: %s\n", "Notes", deployment.Notes)
 	fmt.Printf("%15s: %s\n", "Billing Code", deployment.CustomerBillingCode)
+	fmt.Printf("%15s: %s\n", "Version", deployment.Version)
+	fmt.Printf("%15s: %s\n", "Cluster ID", deployment.ClusterID)
 
 	if deployment.ProvisionRecipeID != "" {
 		fmt.Printf("%15s: %s\n", "Prov Recipe ID", deployment.ProvisionRecipeID)
@@ -106,11 +108,11 @@ func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "SSH", deployment.Connection.SSH)
 	fmt.Printf("%15s: %s\n", "Admin", deployment.Connection.Admin)
 	fmt.Printf("%15s: %s\n", "SSHAdmin", deployment.Connection.SSHAdmin)
-	fmt.Printf("%15s: %s\n", "CLI Connect", deployment.Connection.CLI)
-	fmt.Printf("%15s: %s\n", "Direct Connect", deployment.Connection.Direct)
+	printArray("CLI Connect", deployment.Connection.CLI)
+	printArray("Direct Connect", deployment.Connection.Direct)
 
 	// Format the Misc connection as a JSON object
-	miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "", " ")
+	miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "                 ", " ")
 	if err != nil {
 		fmt.Printf("%15s: %#v\n", "Misc Error", err)
 	} else {
@@ -119,6 +121,17 @@ func printDeployment(deployment composeAPI.Deployment) {
 
 }
 
+func printArray(title string, items []string) {
+	if len(items) == 1 {
+		fmt.Printf("%15s: %s\n", title, items[0])
+	} else {
+		fmt.Printf("%15s: [\n", title)
+		for _, c := range items {
+			fmt.Printf("%15s  %s\n", "", c)
+		}
+		fmt.Printf("%15s  ]\n", "")
+	}
+}
 func printDatabase(database composeAPI.Database) {
 	fmt.Printf("%15s: %s\n", "Type", database.DatabaseType)
 	fmt.Printf("%15s: %s\n", "Status", database.Status)

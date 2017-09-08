@@ -32,6 +32,7 @@ type Cluster struct {
 	AccountSlug string    `json:"account_slug"`
 	CreatedAt   time.Time `json:"created_at"`
 	Subdomain   string    `json:"subdomain"`
+	Tags        []string  `json:"tags"`
 }
 
 type clusterResponse struct {
