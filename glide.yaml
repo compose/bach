@@ -1,6 +1,0 @@
-package: github.com/compose/bach
-import:
-- package: github.com/compose/gocomposeapi
-  version: 0.2.1
-- package: github.com/spf13/cobra
-- package: github.com/spf13/viper
