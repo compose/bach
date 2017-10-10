@@ -24,6 +24,13 @@ type User struct {
 	Name string `json:"name"`
 }
 
+// UserParams structure
+type UserParams struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Phone string `json:"phone"`
+}
+
 //GetUserJSON returns user JSON string
 func (c *Client) GetUserJSON() (string, []error) {
 	return c.getJSON("user")

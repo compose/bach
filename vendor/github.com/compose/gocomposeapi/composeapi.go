@@ -23,6 +23,8 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"time"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -33,6 +35,15 @@ const (
 
 // Client is a structure that holds session information for the API
 type Client struct {
+	// The number of times to retry a failing request if the status code is
+	// retryable (e.g. for HTTP 429 or 500)
+	Retries int
+	// The interval to wait between retries. gorequest does not yet support
+	// exponential back-off on retries
+	RetryInterval time.Duration
+	// RetryStatusCodes is the list of status codes to retry for
+	RetryStatusCodes []int
+
 	apiToken      string
 	logger        *log.Logger
 	enableLogging bool
@@ -41,8 +52,17 @@ type Client struct {
 // NewClient returns a Client for further interaction with the API
 func NewClient(apiToken string) (*Client, error) {
 	return &Client{
-		apiToken: apiToken,
-		logger:   log.New(ioutil.Discard, "", 0),
+		apiToken:      apiToken,
+		logger:        log.New(ioutil.Discard, "", 0),
+		Retries:       5,
+		RetryInterval: 3 * time.Second,
+		RetryStatusCodes: []int{
+			http.StatusRequestTimeout,
+			http.StatusTooManyRequests,
+			http.StatusBadGateway,
+			http.StatusServiceUnavailable,
+			http.StatusGatewayTimeout,
+		},
 	}, nil
 }
 
@@ -60,7 +80,9 @@ func (c *Client) newRequest(method, targetURL string) *gorequest.SuperAgent {
 		Set("Authorization", "Bearer "+c.apiToken).
 		Set("Content-type", "application/json; charset=utf-8").
 		SetLogger(c.logger).
-		SetDebug(c.enableLogging)
+		SetDebug(c.enableLogging).
+		SetCurlCommand(c.enableLogging).
+		Retry(c.Retries, c.RetryInterval, c.RetryStatusCodes...)
 }
 
 // Link structure for JSON+HAL links

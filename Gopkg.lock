@@ -4,19 +4,20 @@
 [[projects]]
   name = "github.com/compose/gocomposeapi"
   packages = ["."]
-  revision = "748d27e6865c2c3154b1f79b427e21a7e1a0ceac"
-  version = "0.2.1"
+  revision = "24f44682cc819028b2007706185a1f9b6d4ca126"
+  version = "0.2.3"
+
+[[projects]]
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  revision = "629574ca2a5df945712d3079857300b5e4da0236"
+  version = "v1.4.2"
 
 [[projects]]
   branch = "master"
-  name = "github.com/fsnotify/fsnotify"
-  packages = ["."]
-  revision = "4da3e2cfbabc9f751898f250b49f2439785783a1"
-
-[[projects]]
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
-  revision = "8f6b1344a92ff8877cf24a5de9177bf7d0a2a187"
+  revision = "42e33e2d55a0ff1d6263f738896ea8c13571a8d0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -25,10 +26,10 @@
   version = "v1.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/magiconair/properties"
   packages = ["."]
-  revision = "8d7837e64d3c1ee4e54a880c5a920ab4316fc90a"
+  revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
+  version = "v1.7.3"
 
 [[projects]]
   branch = "master"
@@ -37,9 +38,10 @@
   revision = "d0303fe809921458f417bcf828397a65db30a7e4"
 
 [[projects]]
+  branch = "master"
   name = "github.com/moul/http2curl"
   packages = ["."]
-  revision = "4e24498b31dba4683efb9d35c1c8a91e2eda28c8"
+  revision = "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d"
 
 [[projects]]
   name = "github.com/parnurzeal/gorequest"
@@ -50,17 +52,20 @@
 [[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "1d6b12b7cb290426e27e6b4e38b89fcda3aeef03"
+  revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "c605e284fe17294bda444b34710735b29d1a9d90"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/spf13/afero"
   packages = [".","mem"]
-  revision = "ee1bd8ee15a1306d1f9201acc41ef39cd9f99a1b"
+  revision = "e67d870304c4bca21331b02f414f970df13aa694"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -69,9 +74,10 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "b78744579491c1ceeaaa3b40205e56b0591b93a3"
+  revision = "4d6af280c76ff7d266434f2dba207c4b75dfc076"
 
 [[projects]]
   branch = "master"
@@ -82,7 +88,8 @@
 [[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "7aff26db30c1be810f9de5038ec5ef96ac41fd7c"
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/spf13/viper"
@@ -91,19 +98,22 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/net"
   packages = ["idna","publicsuffix"]
-  revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
+  revision = "a04bdaca5b32abe1c069418fb7088ae607de5bd0"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "a45f55524b7ec57890cfa6c6bc06b47f877be0d1"
+  revision = "ebfc5b4631820b793c9010c87fd8fef0f39eb082"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
-  revision = "bd91bbf73e9a4a801adbfb97133c992678533126"
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  revision = "825fc78a2fd6fa0a5447e300189e3219e05e1f25"
 
 [[projects]]
   branch = "v2"
@@ -114,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "04957790f81bc48bc3eb50a6dcf5c5ead577362c4823b32e9a468fed9aa3276f"
+  inputs-digest = "519f2399e23f6c6fb17a3c88556aa33d26802fdf465baa493f0a5bdb38bf0519"
   solver-name = "gps-cdcl"
   solver-version = 1

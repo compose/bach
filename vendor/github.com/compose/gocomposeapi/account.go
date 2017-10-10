@@ -16,6 +16,7 @@ package composeapi
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // Account structure
@@ -23,6 +24,16 @@ type Account struct {
 	ID   string `json:"id"`
 	Slug string `json:"slug"`
 	Name string `json:"name"`
+}
+
+// AccountParams is the list of parameters that can be updated on an existing
+// account
+type AccountParams struct {
+	StripeCustomerID string `json:"stripe_customer_id"`
+}
+
+type updateAccount struct {
+	Account AccountParams `json:"account"`
 }
 
 type accountResponse struct {
@@ -76,4 +87,68 @@ func (c *Client) GetAccountUsers() ([]User, []error) {
 	json.Unmarshal([]byte(body), &accountUsersResponse)
 
 	return accountUsersResponse.Embedded.Users, nil
+}
+
+// CreateAccountUserJSON performs the call
+func (c *Client) CreateAccountUserJSON(accountID string, params UserParams) (string, []error) {
+	response, body, errs := c.newRequest("POST",
+		apibase+"accounts/"+accountID+"/users").
+		Send(params).
+		End()
+
+	if response.StatusCode != 201 { // Expect Created on success
+		myerrors := Errors{}
+		err := json.Unmarshal([]byte(body), &myerrors)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
+				response.StatusCode, body))
+		} else {
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
+		}
+	}
+	return body, errs
+}
+
+// CreateAccountUser adds a new user to an account and returns a User object on success
+func (c *Client) CreateAccountUser(accountID string, params UserParams) (*User, []error) {
+	body, errs := c.CreateAccountUserJSON(accountID, params)
+	if len(errs) != 0 {
+		return nil, errs
+	}
+
+	user := User{}
+	json.Unmarshal([]byte(body), &user)
+	return &user, nil
+}
+
+// DeleteAccountUserJSON performs the call
+func (c *Client) DeleteAccountUserJSON(accountID, userID string) (string, []error) {
+	response, body, errs := c.newRequest("DELETE",
+		apibase+"accounts/"+accountID+"/users/"+userID).
+		End()
+
+	if response.StatusCode != 200 { // Expect OK on success
+		myerrors := Errors{}
+		err := json.Unmarshal([]byte(body), &myerrors)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
+				response.StatusCode, body))
+		} else {
+			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
+		}
+	}
+
+	return body, errs
+}
+
+// DeleteAccountUser removes a user from the provided account
+func (c *Client) DeleteAccountUser(accountID, userID string) (*User, []error) {
+	body, errs := c.DeleteAccountUserJSON(accountID, userID)
+	if len(errs) != 0 {
+		return nil, errs
+	}
+
+	user := User{}
+	json.Unmarshal([]byte(body), &user)
+	return &user, nil
 }
