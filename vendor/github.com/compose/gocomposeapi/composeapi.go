@@ -96,6 +96,11 @@ type Errors struct {
 	Error map[string][]string `json:"errors,omitempty"`
 }
 
+//SimpleError struct for parsing simple error returns
+type SimpleError struct {
+	Error string `json:"errors"`
+}
+
 func printJSON(jsontext string) {
 	var tempholder map[string]interface{}
 
@@ -119,13 +124,30 @@ func (c *Client) getJSON(endpoint string) (string, []error) {
 	response, body, errs := c.newRequest("GET", apibase+endpoint).End()
 
 	if response.StatusCode != 200 {
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
+
 	return body, errs
+}
+
+//ProcessErrors tries to turn errors into an Errors struct
+func ProcessErrors(statuscode int, body string) []error {
+	errs := []error{}
+	myerrors := Errors{}
+	err := json.Unmarshal([]byte(body), &myerrors)
+	// Did parsing like this break anything
+	if err != nil {
+		mysimpleerror := SimpleError{}
+		err := json.Unmarshal([]byte(body), &mysimpleerror)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", statuscode, body))
+		} else {
+			errs = append(errs, fmt.Errorf("%s", mysimpleerror.Error))
+		}
+	} else {
+		// Todo: iterate through and add eachg error.
+		errs = append(errs, fmt.Errorf("%v", myerrors.Error))
+	}
+
+	return errs
 }

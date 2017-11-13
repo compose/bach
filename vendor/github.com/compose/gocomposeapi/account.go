@@ -16,7 +16,6 @@ package composeapi
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // Account structure
@@ -97,15 +96,9 @@ func (c *Client) CreateAccountUserJSON(accountID string, params UserParams) (str
 		End()
 
 	if response.StatusCode != 201 { // Expect Created on success
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
+
 	return body, errs
 }
 
@@ -128,14 +121,7 @@ func (c *Client) DeleteAccountUserJSON(accountID, userID string) (string, []erro
 		End()
 
 	if response.StatusCode != 200 { // Expect OK on success
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs

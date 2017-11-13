@@ -15,34 +15,14 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // userCmd represents the user command
 var userCmd = &cobra.Command{
 	Use:   "user",
-	Short: "Show user information",
-	Long:  `Show user information`,
-	Run: func(cmd *cobra.Command, args []string) {
-		c := getComposeAPI()
-		if outputRaw {
-			text, errs := c.GetUserJSON()
-			bailOnErrs(errs)
-			fmt.Println(text)
-		} else {
-			user, errs := c.GetUser()
-			bailOnErrs(errs)
-			if !outputJSON {
-				fmt.Printf("%15s: %s\n", "ID", user.ID)
-				// fmt.Printf("%15s: %s\n", "Name", user.Name)
-				fmt.Println()
-			} else {
-				printAsJSON(user)
-			}
-		}
-	},
+	Short: "Commands for user management",
+	Long:  `Commands for user management`,
 }
 
 func init() {

@@ -58,14 +58,7 @@ func (c *Client) CreateTeamJSON(params TeamParams) (string, []error) {
 		End()
 
 	if response.StatusCode != 201 { // Expect Created on success - assume error on anything else
-		myErrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myErrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 	return body, errs
 }
@@ -145,14 +138,7 @@ func (c *Client) DeleteTeamJSON(teamID string) (string, []error) {
 		End()
 
 	if response.StatusCode != 200 { // Expect OK on success - assume error on anything else
-		myErrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myErrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs
@@ -180,14 +166,7 @@ func (c *Client) PatchTeamJSON(teamID, teamName string) (string, []error) {
 		End()
 
 	if response.StatusCode != 200 { // Expect OK on success - assume error on anything else
-		myErrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myErrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs
@@ -215,13 +194,7 @@ func (c *Client) PutTeamUsersJSON(teamID string, userIDs []string) (string, []er
 		End()
 
 	if response.StatusCode != 200 { // Expect OK on success - assume error on anything else
-		myErrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myErrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs

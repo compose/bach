@@ -16,7 +16,6 @@ package composeapi
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // Backup structure
@@ -62,13 +61,7 @@ func (c *Client) StartBackupForDeploymentJSON(deploymentid string) (string, []er
 		End()
 
 	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d", response.StatusCode))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs
@@ -149,13 +142,7 @@ func (c *Client) RestoreBackupJSON(params RestoreBackupParams) (string, []error)
 		End()
 
 	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs
