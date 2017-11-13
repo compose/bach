@@ -34,7 +34,7 @@ Available Commands:
   recipes     Show Recipes related to deployment
   scale       Show scale information for a deployment
   teams       Commands for teams
-  user        Show user information
+  user        Commands for user management
   users       Show all users on account
   versions    Show versions for deployment database
   watch       Watch a recipe status
@@ -61,6 +61,11 @@ bach backups [command]
   list        Show Backups for deployment
   restore     Restore a deployment
   start       Start backups for a deployment
+
+bach user [command]
+  add         Add user
+  del         Delete user
+  show        Show current user information
 
 bach teams [command]
   create      Create named team
