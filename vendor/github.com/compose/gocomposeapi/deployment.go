@@ -42,18 +42,20 @@ type Links struct {
 	ScalingsLink     Link `json:"scalings"`
 	BackupsLink      Link `json:"backups"`
 	AlertsLink       Link `json:"alerts"`
+	PortalUsersLink  Link `json:"portal_users"`
 	ClusterLink      Link `json:"cluster"`
 }
 
 // ConnectionStrings structure, part of the Deployment struct
 type ConnectionStrings struct {
-	Health   string      `json:"health,omitempty"`
-	SSH      string      `json:"ssh,omitempty"`
-	Admin    string      `json:"admin,omitempty"`
-	SSHAdmin string      `json:"ssh_admin,omitempty"`
-	CLI      []string    `json:"cli,omitempty"`
-	Direct   []string    `json:"direct,omitempty"`
-	Misc     interface{} `json:"misc,omitempty"`
+	Health   []string            `json:"health,omitempty"`
+	SSH      []string            `json:"ssh,omitempty"`
+	Admin    []string            `json:"admin,omitempty"`
+	SSHAdmin []string            `json:"ssh_admin,omitempty"`
+	CLI      []string            `json:"cli,omitempty"`
+	Direct   []string            `json:"direct,omitempty"`
+	Maps     []map[string]string `json:"maps,omitempty"`
+	Misc     interface{}         `json:"misc,omitempty"`
 }
 
 // deploymentsResource is used to represent and remove the JSON+HAL Embedded wrapper
@@ -222,13 +224,7 @@ func (c *Client) DeprovisionDeploymentJSON(deploymentID string) (string, []error
 		End()
 
 	if response.StatusCode != 202 { // Expect Accepted on success - assume error on anything else
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs
@@ -265,13 +261,7 @@ func (c *Client) PatchDeploymentJSON(params PatchDeploymentParams) (string, []er
 		End()
 
 	if response.StatusCode != 200 { // Expect Accepted on success - assume error on anything else
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s", response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs

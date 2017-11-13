@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/compose/gocomposeapi"
   packages = ["."]
-  revision = "24f44682cc819028b2007706185a1f9b6d4ca126"
-  version = "0.2.3"
+  revision = "43f6db5661d738d5c42d7bc2da2f98520e0b9330"
+  version = "0.3.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -124,6 +124,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d7330a7a051d476b3d4b4da54c1e1b33325ce6bc2151b735c69058d42b9b9243"
+  inputs-digest = "7ab00f4562617512e7c813c49161c4e79922a5a651fbceab91c3f4b61d8630b0"
   solver-name = "gps-cdcl"
   solver-version = 1

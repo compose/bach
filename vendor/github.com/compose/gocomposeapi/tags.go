@@ -64,14 +64,7 @@ func (c *Client) updateClusterTagsJSON(clusterID, method string, tags []string) 
 		End()
 
 	if response.StatusCode != 200 { // Expect OK on success - assume error on anything else
-		myerrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myerrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, response.Body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myerrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return body, errs

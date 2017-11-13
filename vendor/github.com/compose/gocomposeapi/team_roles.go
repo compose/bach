@@ -100,14 +100,7 @@ func (c *Client) DeleteTeamRoleJSON(deploymentID string, params TeamRoleParams) 
 		End()
 
 	if response.StatusCode != 204 { // No response body is returned on success
-		myErrors := Errors{}
-		err := json.Unmarshal([]byte(body), &myErrors)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("Unable to parse error - status code %d - body %s",
-				response.StatusCode, body))
-		} else {
-			errs = append(errs, fmt.Errorf("%v", myErrors.Error))
-		}
+		errs = ProcessErrors(response.StatusCode, body)
 	}
 
 	return errs

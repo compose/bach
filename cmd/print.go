@@ -75,10 +75,10 @@ func printDeployment(deployment composeAPI.Deployment) {
 	fmt.Printf("%15s: %s\n", "ID", deployment.ID)
 	fmt.Printf("%15s: %s\n", "Name", deployment.Name)
 	fmt.Printf("%15s: %s\n", "Type", deployment.Type)
+	fmt.Printf("%15s: %s\n", "Version", deployment.Version)
 	fmt.Printf("%15s: %s\n", "Created At", deployment.CreatedAt)
 	fmt.Printf("%15s: %s\n", "Notes", deployment.Notes)
 	fmt.Printf("%15s: %s\n", "Billing Code", deployment.CustomerBillingCode)
-	fmt.Printf("%15s: %s\n", "Version", deployment.Version)
 	fmt.Printf("%15s: %s\n", "Cluster ID", deployment.ClusterID)
 
 	if deployment.ProvisionRecipeID != "" {
@@ -104,14 +104,17 @@ func printDeployment(deployment composeAPI.Deployment) {
 		}
 	}
 	fmt.Printf("%15s: %s\n", "Web UI Link", getLink(deployment.Links.ComposeWebUILink))
-	fmt.Printf("%15s: %s\n", "Health", deployment.Connection.Health)
-	fmt.Printf("%15s: %s\n", "SSH", deployment.Connection.SSH)
-	fmt.Printf("%15s: %s\n", "Admin", deployment.Connection.Admin)
-	fmt.Printf("%15s: %s\n", "SSHAdmin", deployment.Connection.SSHAdmin)
+	printArray("Health", deployment.Connection.Health)
+	printArray("SSH", deployment.Connection.SSH)
+	printArray("Admin", deployment.Connection.Admin)
+	printArray("SSHAdmin", deployment.Connection.SSHAdmin)
 	printArray("CLI Connect", deployment.Connection.CLI)
 	printArray("Direct Connect", deployment.Connection.Direct)
-
+	printMap("Maps", deployment.Connection.Maps)
 	// Format the Misc connection as a JSON object
+	if len(deployment.Connection.Misc.(map[string]interface{})) == 0 {
+		return
+	}
 	miscbuf, err := json.MarshalIndent(deployment.Connection.Misc, "                 ", " ")
 	if err != nil {
 		fmt.Printf("%15s: %#v\n", "Misc Error", err)
@@ -122,16 +125,37 @@ func printDeployment(deployment composeAPI.Deployment) {
 }
 
 func printArray(title string, items []string) {
-	if len(items) == 1 {
-		fmt.Printf("%15s: %s\n", title, items[0])
-	} else {
-		fmt.Printf("%15s: [\n", title)
-		for _, c := range items {
+	if len(items) == 0 {
+		return
+	}
+	for i, c := range items {
+		if i == 0 {
+			fmt.Printf("%15s: %s\n", title, c)
+		} else {
 			fmt.Printf("%15s  %s\n", "", c)
 		}
-		fmt.Printf("%15s  ]\n", "")
 	}
 }
+
+func printMap(title string, themap []map[string]string) {
+	if len(themap) == 0 {
+		return
+	}
+
+	fmt.Printf("%15s: {\n", title)
+	for i, itemmap := range themap {
+		for k, v := range itemmap {
+			fmt.Printf("%15s   \"%s\":\"%s\"", "", k, v)
+			if i < len(themap)-1 {
+				fmt.Println(",")
+			} else {
+				fmt.Println()
+			}
+		}
+	}
+	fmt.Printf("%15s  }\n", "")
+}
+
 func printDatabase(database composeAPI.Database) {
 	fmt.Printf("%15s: %s\n", "Type", database.DatabaseType)
 	fmt.Printf("%15s: %s\n", "Status", database.Status)
