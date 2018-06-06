@@ -30,7 +30,7 @@ func getComposeAPI() (client *composeAPI.Client) {
 	if apiToken == "Your API Token" {
 		ostoken := os.Getenv("COMPOSEAPITOKEN")
 		if ostoken == "" {
-			log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set")
+			log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set - Get your token at https://app.compose.io/oauth/api_tokens")
 		}
 		apiToken = ostoken
 	}
