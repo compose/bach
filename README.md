@@ -1,12 +1,15 @@
 # bach - Basic API (Compose) Handler
 
-Bach is a Go-based application which uses the Compose API to provide the ability
+Bach is an application which uses the Compose API to provide the ability
 to create, monitor and delete Compose databases.
 
 To use, an environment variable - COMPOSEAPITOKEN must be set. This token value
 can be obtained from the Compose console's Account view.
 
-Further details to follow.
+Where a command needs a parameter to identify a deployment, Bach can use either 
+the deployment ID or the deployment name.
+
+Bach is written in Go and uses the GoComposeAPI package for API requests.
 
 ## Bach commands
 
@@ -30,6 +33,7 @@ Available Commands:
   deprovision Deprovision a deployment
   details     Show details for a deployment
   help        Help about any command
+  list        List deployments attached to account
   recipe      Show details of a recipe
   recipes     Show Recipes related to deployment
   scale       Show scale information for a deployment
