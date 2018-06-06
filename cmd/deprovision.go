@@ -23,20 +23,24 @@ import (
 
 // deprovisionCmd represents the deprovision command
 var deprovisionCmd = &cobra.Command{
-	Use:   "deprovision [deployment id]",
+	Use:   "deprovision [deployment id/name]",
 	Short: "Deprovision a deployment",
 	Long:  `.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
 		}
 		c := getComposeAPI()
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		if outputRaw {
-			text, errs := c.DeprovisionDeploymentJSON(args[0])
+			text, errs := c.DeprovisionDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			recipe, errs := c.DeprovisionDeployment(args[0])
+			recipe, errs := c.DeprovisionDeployment(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

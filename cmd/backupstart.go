@@ -23,20 +23,24 @@ import (
 
 // backupstartCmd represents the backups start command
 var backupstartCmd = &cobra.Command{
-	Use:   "start [deployment id]",
+	Use:   "start [deployment id/name]",
 	Short: "Start backups for a deployment",
 	Long:  `Start an on-demand backups for a deployment. Will return the recipe performing the backup.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
+		}
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
 		}
 		if outputRaw {
-			text, errs := c.StartBackupForDeploymentJSON(args[0])
+			text, errs := c.StartBackupForDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			recipe, errs := c.StartBackupForDeployment(args[0])
+			recipe, errs := c.StartBackupForDeployment(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

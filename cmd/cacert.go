@@ -24,15 +24,19 @@ import (
 
 // cacertCmd represents the cacert command
 var cacertCmd = &cobra.Command{
-	Use:   "cacert [deployment id]",
+	Use:   "cacert [deployment id/name]",
 	Short: "Returns the self-signed cert for the deployment",
 	Long:  `Returns the self-signed cert for the deployment`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
 		}
 		c := getComposeAPI()
-		deployment, errs := c.GetDeployment(args[0])
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+		deployment, errs := c.GetDeployment(depid)
 		bailOnErrs(errs)
 		decoded, err := base64.StdEncoding.DecodeString(deployment.CACertificateBase64)
 		if err != nil {

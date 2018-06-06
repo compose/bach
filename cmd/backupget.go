@@ -23,20 +23,25 @@ import (
 
 // backupgetCmd represents the backups get command
 var backupgetCmd = &cobra.Command{
-	Use:   "get [deployment id] [backup id]",
+	Use:   "get [deployment id] [backup id/name]",
 	Short: "Show Backup details for deployment",
 	Long:  `Show the backup details for a deployment's backup`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if len(args) != 2 {
-			log.Fatal("Need a deployment id and a backup id")
+			log.Fatal("Need a deployment id/name and a backup id")
 		}
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+		backupid := args[1]
 		if outputRaw {
-			text, errs := c.GetBackupDetailsForDeploymentJSON(args[0], args[1])
+			text, errs := c.GetBackupDetailsForDeploymentJSON(depid, backupid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			backup, errs := c.GetBackupDetailsForDeployment(args[0], args[1])
+			backup, errs := c.GetBackupDetailsForDeployment(depid, backupid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

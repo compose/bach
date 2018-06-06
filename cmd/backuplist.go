@@ -23,20 +23,24 @@ import (
 
 // backuplistCmd represents the backups list command
 var backuplistCmd = &cobra.Command{
-	Use:   "list [deployment id]",
+	Use:   "list [deployment id/name]",
 	Short: "Show Backups for deployment",
 	Long:  `Show the backups for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
+		}
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
 		}
 		if outputRaw {
-			text, errs := c.GetBackupsForDeploymentJSON(args[0])
+			text, errs := c.GetBackupsForDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			backups, errs := c.GetBackupsForDeployment(args[0])
+			backups, errs := c.GetBackupsForDeployment(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

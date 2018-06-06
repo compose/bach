@@ -27,9 +27,9 @@ var restoressl bool
 
 // backuprestoreCmd represents the backups restore command
 var backuprestoreCmd = &cobra.Command{
-	Use:   "restore [deployment id] [backup id] [new deployment name]",
+	Use:   "restore [deployment id/name] [backup id] [new deployment name]",
 	Short: "Restore a deployment",
-	Long:  `Restores a deployment. Requires deployment id, backup id, and new deployment name.`,
+	Long:  `Restores a deployment. Requires deployment id/name, backup id, and new deployment name.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if outputRaw {
@@ -37,14 +37,17 @@ var backuprestoreCmd = &cobra.Command{
 		}
 
 		if len(args) != 3 {
-			log.Fatal("Need deployment id, backup id and new deployment name")
+			log.Fatal("Need deployment id/name, backup id and new deployment name")
 		}
 
 		if restoredatacenterid == "" && restoreclusterid == "" {
 			log.Fatal("Must supply either a --cluster id or --datacenter region")
 		}
 
-		deploymentid := args[0]
+		deploymentid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		backupid := args[1]
 		deploymentname := args[2]
 

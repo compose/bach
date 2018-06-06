@@ -23,20 +23,24 @@ import (
 
 // scaleCmd represents the scale command
 var scaleCmd = &cobra.Command{
-	Use:   "scale [deployment id]",
+	Use:   "scale [deployment id/name]",
 	Short: "Show scale information for a deployment",
 	Long:  `Show Scale information (including unit size) for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			log.Fatal("Need deployment id")
+			log.Fatal("Need deployment id/name")
 		}
 		c := getComposeAPI()
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		if outputRaw {
-			text, errs := c.GetScalingsJSON(args[0])
+			text, errs := c.GetScalingsJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			scalings, errs := c.GetScalings(args[0])
+			scalings, errs := c.GetScalings(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

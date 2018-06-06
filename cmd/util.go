@@ -11,9 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package cmd
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -28,7 +30,7 @@ func getComposeAPI() (client *composeAPI.Client) {
 	if apiToken == "Your API Token" {
 		ostoken := os.Getenv("COMPOSEAPITOKEN")
 		if ostoken == "" {
-			log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set")
+			log.Fatal("Token not set and COMPOSEAPITOKEN environment variable not set - Get your token at https://app.compose.io/oauth/api_tokens")
 		}
 		apiToken = ostoken
 	}
@@ -39,6 +41,37 @@ func getComposeAPI() (client *composeAPI.Client) {
 		log.Fatalf("Could not create compose client: %s", err.Error())
 	}
 	return client
+}
+
+func resolveDepID(client *composeAPI.Client, arg string) (depid string, err error) {
+	// Test for being just deployment id
+	if len(arg) == 24 && isHexString(arg) {
+		return arg, nil
+	}
+
+	// Get all the deployments and search
+	deployments, errs := client.GetDeployments()
+
+	if errs != nil {
+		bailOnErrs(errs)
+		return "", errs[0]
+	}
+
+	for _, deployment := range *deployments {
+		if deployment.Name == arg {
+			return deployment.ID, nil
+		}
+	}
+
+	return "", fmt.Errorf("deployment not found: %s", arg)
+}
+
+func isHexString(s string) bool {
+	_, err := hex.DecodeString(s)
+	if err == nil {
+		return true
+	}
+	return false
 }
 
 func watchRecipeTillComplete(client *composeAPI.Client, recipeid string) {
