@@ -171,11 +171,42 @@ func printDatabase(database composeAPI.Database) {
 	}
 }
 
-func printScalings(scalings composeAPI.Scalings) {
+func printRawScalings(scalings composeAPI.Scalings) {
 	fmt.Printf("%15s: %d\n", "Allocated Units", scalings.AllocatedUnits)
 	fmt.Printf("%15s: %d\n", "Used Units", scalings.UsedUnits)
 	fmt.Printf("%15s: %d\n", "Starting Units", scalings.StartingUnits)
 	fmt.Printf("%15s: %d\n", "Minimum Units", scalings.MinimumUnits)
+	fmt.Printf("%15s: %d\n", "Unit size in MB", scalings.UnitSizeInMB)
+	fmt.Printf("%15s: %s\n", "Unit Type", scalings.UnitType)
+}
+
+func plural(value int, singtemplate string, pluraltemplate string) string {
+	if value == 1 {
+		return fmt.Sprintf(singtemplate, value)
+	}
+
+	return fmt.Sprintf(pluraltemplate, value)
+}
+
+func printScalings(scalings composeAPI.Scalings) {
+	if scalings.UnitType == "memory" {
+		fmt.Println("This is a memory scaled deployment.")
+		totalRAM := scalings.AllocatedUnits * scalings.UnitSizeInMB
+		fmt.Printf("There %s of %dMB RAM allocated to it.\n", plural(scalings.AllocatedUnits, "is %d unit", "are %d units"), scalings.UnitSizeInMB)
+		fmt.Printf("This means that each database node has of %dMB of RAM.\n", totalRAM)
+		totalStorage := totalRAM * 4
+		fmt.Printf("The allocated units give %dMB of storage to the deployment.", totalStorage)
+	} else if scalings.UnitType == "data" {
+		fmt.Println("This is a storage scaled deployment.")
+		totalStorage := scalings.AllocatedUnits * scalings.UnitSizeInMB
+		usedStorage := scalings.UsedUnits * scalings.UnitSizeInMB
+		fmt.Printf("There %s of %d MB storage allocated to it.\n", plural(scalings.AllocatedUnits, "is %d unit", "are %d units"), scalings.UnitSizeInMB)
+		fmt.Printf("This means a storage of %dMB is available of which, %dMB is used.\n", totalStorage, usedStorage)
+		totalRAM := int(totalStorage / 10)
+		fmt.Printf("The allocated units give each database node %dMB of RAM.\n", totalRAM)
+	} else {
+		fmt.Println("Unknown unit type - contact support.")
+	}
 }
 
 func printTeam(team composeAPI.Team) {
