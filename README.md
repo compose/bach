@@ -11,6 +11,8 @@ the deployment ID or the deployment name.
 
 Bach is written in Go and uses the GoComposeAPI package for API requests.
 
+The latest binary releases of Bach, for macOS, Linux and Windows, along with source snapshots, are available in the [releases](github.com/compose/bach/releases/latest) tab.
+
 ## Bach commands
 
 ```text
