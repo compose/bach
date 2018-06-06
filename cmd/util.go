@@ -14,6 +14,7 @@
 package cmd
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -39,6 +40,37 @@ func getComposeAPI() (client *composeAPI.Client) {
 		log.Fatalf("Could not create compose client: %s", err.Error())
 	}
 	return client
+}
+
+func resolveDepID(client *composeAPI.Client, arg string) (depid string, err error) {
+	// Test for being just deployment id
+	if len(arg) == 24 && isHexString(arg) {
+		return arg, nil
+	}
+
+	// Get all the deployments and search
+	deployments, errs := client.GetDeployments()
+
+	if errs != nil {
+		bailOnErrs(errs)
+		return "", errs[0]
+	}
+
+	for _, deployment := range *deployments {
+		if deployment.Name == arg {
+			return deployment.ID, nil
+		}
+	}
+
+	return "", fmt.Errorf("deployment not found: %s", arg)
+}
+
+func isHexString(s string) bool {
+	_, err := hex.DecodeString(s)
+	if err == nil {
+		return true
+	}
+	return false
 }
 
 func watchRecipeTillComplete(client *composeAPI.Client, recipeid string) {

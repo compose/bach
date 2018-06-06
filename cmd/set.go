@@ -25,18 +25,21 @@ import (
 
 // setCmd represents the scale set command
 var setCmd = &cobra.Command{
-	Use:   "set [deployment id] [scale in integer units]",
+	Use:   "set [deployment id/name] [scale in integer units]",
 	Short: "Set scale for a deployment",
 	Long:  `Sets the number of resource units (storage/memory) that should be available.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			log.Fatal("Need a deployment id and new units value")
+			log.Fatal("Need a deployment id/name and new units value")
 		}
 		c := getComposeAPI()
-
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		params := composeAPI.ScalingsParams{}
-		params.DeploymentID = args[0]
+		params.DeploymentID = depid
 		scaleval, err := strconv.Atoi(args[1])
 		if err != nil {
 			log.Fatal("Scale units must be integer")

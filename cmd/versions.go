@@ -23,20 +23,24 @@ import (
 
 // versionsCmd represents the versions command
 var versionsCmd = &cobra.Command{
-	Use:   "versions [deployment id]",
+	Use:   "versions [deployment id/name]",
 	Short: "Show versions for deployment database",
 	Long:  `Shows all available upgrade versions for the database installed within a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id to examine")
+			log.Fatal("Need a deployment id/name to examine")
 		}
 		c := getComposeAPI()
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		if outputRaw {
-			text, errs := c.GetVersionsForDeploymentJSON(args[0])
+			text, errs := c.GetVersionsForDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			versions, errs := c.GetVersionsForDeployment(args[0])
+			versions, errs := c.GetVersionsForDeployment(depid)
 			bailOnErrs(errs)
 			if !outputJSON {
 				for _, v := range *versions {

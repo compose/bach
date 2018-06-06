@@ -23,20 +23,24 @@ import (
 
 // detailsCmd represents the details command
 var detailsCmd = &cobra.Command{
-	Use:   "details [deployment id]",
+	Use:   "details [deployment id/name]",
 	Short: "Show details for a deployment",
 	Long:  `Show the details for a deployment including connection strings and certificates`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
 		}
 		c := getComposeAPI()
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		if outputRaw {
-			text, errs := c.GetDeploymentJSON(args[0])
+			text, errs := c.GetDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			deployment, errs := c.GetDeployment(args[0])
+			deployment, errs := c.GetDeployment(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {

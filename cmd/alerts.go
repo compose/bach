@@ -23,20 +23,24 @@ import (
 
 // alertsCmd represents the alerts command
 var alertsCmd = &cobra.Command{
-	Use:   "alerts [deployment id]",
+	Use:   "alerts [deployment id/name]",
 	Short: "Show Alerts for deployment",
 	Long:  `Show the alerts for a deployment`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c := getComposeAPI()
 		if len(args) == 0 {
-			log.Fatal("Need a deployment id")
+			log.Fatal("Need a deployment id/name")
+		}
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
 		}
 		if outputRaw {
-			text, errs := c.GetAlertsForDeploymentJSON(args[0])
+			text, errs := c.GetAlertsForDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			alerts, errs := c.GetAlertsForDeployment(args[0])
+			alerts, errs := c.GetAlertsForDeployment(depid)
 			bailOnErrs(errs)
 
 			if !outputJSON {
