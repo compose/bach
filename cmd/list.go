@@ -41,7 +41,7 @@ var listCmd = &cobra.Command{
 			deployments, errs := c.GetDeployments()
 			bailOnErrs(errs)
 
-			matcher, err := regexp.Compile(filter)
+			matcher, err := regexp.Compile(listfilter)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -51,7 +51,7 @@ var listCmd = &cobra.Command{
 				fmt.Printf("%-24s %-14s %-40s\n", strings.Repeat("-", 24), strings.Repeat("-", 14), strings.Repeat("-", 40))
 
 				for _, v := range *deployments {
-					if (dbtype == "" || dbtype == v.Type) && matcher.MatchString(v.Name) {
+					if (listdbtype == "" || listdbtype == v.Type) && matcher.MatchString(v.Name) {
 						fmt.Printf("%-24s %-14s %-40s\n", v.ID, v.Type, v.Name)
 					}
 				}
