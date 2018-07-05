@@ -31,12 +31,16 @@ var recipesCmd = &cobra.Command{
 			log.Fatal("Need a deployment id to show recipes for")
 		}
 		c := getComposeAPI()
+		depid, err := resolveDepID(c, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 		if outputRaw {
-			text, errs := c.GetRecipesForDeploymentJSON(args[0])
+			text, errs := c.GetRecipesForDeploymentJSON(depid)
 			bailOnErrs(errs)
 			fmt.Println(text)
 		} else {
-			recipes, errs := c.GetRecipesForDeployment(args[0])
+			recipes, errs := c.GetRecipesForDeployment(depid)
 			bailOnErrs(errs)
 			if !outputJSON {
 				for _, v := range *recipes {
