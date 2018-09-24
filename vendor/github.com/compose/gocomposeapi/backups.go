@@ -16,16 +16,20 @@ package composeapi
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // Backup structure
 type Backup struct {
-	ID           string `json:"id"`
-	Deploymentid string `json:"deployment_id"`
-	Name         string `json:"name"`
-	Type         string `json:"type"`
-	Status       string `json:"status"`
-	DownloadLink string `json:"download_link"`
+	ID             string    `json:"id"`
+	Deploymentid   string    `json:"deployment_id"`
+	Name           string    `json:"name"`
+	Type           string    `json:"type"`
+	Status         string    `json:"status"`
+	IsDownloadable bool      `json:"is_downloadable"`
+	IsRestorable   bool      `json:"is_restorable"`
+	CreatedAt      time.Time `json:"created_at"`
+	DownloadLink   string    `json:"download_link"`
 }
 
 // backupsResponse is used to represent and remove the JSON+HAL Embedded wrapper
