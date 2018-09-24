@@ -36,6 +36,7 @@ Available Commands:
   details     Show details for a deployment
   help        Help about any command
   list        List deployments attached to account
+  logfiles    Commands for logfiles
   recipe      Show details of a recipe
   recipes     Show Recipes related to deployment
   scale       Show scale information for a deployment
@@ -67,6 +68,10 @@ bach backups [command]
   list        Show Backups for deployment
   restore     Restore a deployment
   start       Start backups for a deployment
+
+bach logfiles [command]
+  get         Show Logfile details for deployment
+  list        Show Logfiles for deployment
 
 bach user [command]
   add         Add user
